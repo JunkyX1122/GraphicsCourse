@@ -264,6 +264,16 @@ void OGLRenderer::DebugCallback(GLenum source, GLenum type, GLuint id, GLenum se
 
 		std::cout << "OpenGL Debug Output: " + sourceName + ", " + typeName + ", " + severityName + ", " + string(message) << "\n";
 }
+
+void OGLRenderer::SetShaderLight(const Light &l)
+{
+	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(), "lightPos"), 1, (float*)&l.GetPosition());
+	
+	glUniform4fv(glGetUniformLocation(currentShader->GetProgram(), "lightColour"), 1, (float*)&l.GetColour());
+	
+	glUniform1f(glGetUniformLocation(currentShader->GetProgram(), "lightRadius "), l.GetRadius());
+}
+
 #endif
 
 
