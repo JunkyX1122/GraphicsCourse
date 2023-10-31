@@ -16,6 +16,8 @@
 # Mono auto generated files
 mono_crash.*
 
+/Third Party/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -361,3 +363,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Third Party/SOIL/Simple OpenGL Image Library/projects/codeblocks/SOIL.cbp
+/Third Party/SOIL/Simple OpenGL Image Library/projects/makefile/alternate Makefile.txt
+/Third Party/SOIL/Simple OpenGL Image Library/projects/makefile/makefile
+/Third Party/SOIL/Simple OpenGL Image Library/src/include/SOIL/stbi_dds_aug.h
+/Third Party/SOIL/Simple OpenGL Image Library/src/stbi_DDS_aug.h
