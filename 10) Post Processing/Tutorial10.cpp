@@ -2,7 +2,7 @@
 #include "Renderer.h"
 // HELLO FROM THE OTHER SIDE!
 int main() {	
-	Window w("Post Processing!", 1280, 720,false);
+	Window w("Post Processing WORKING AT HOME!", 1280, 720,false);
 	if(!w.HasInitialised()) {
 		return -1;
 	}
