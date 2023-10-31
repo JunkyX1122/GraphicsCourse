@@ -1,6 +1,6 @@
 #include "../nclgl/window.h"
 #include "Renderer.h"
-
+// HELLO FROM THE OTHER SIDE!
 int main() {	
 	Window w("Post Processing!", 1280, 720,false);
 	if(!w.HasInitialised()) {
