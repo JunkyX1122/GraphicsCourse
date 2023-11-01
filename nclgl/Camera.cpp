@@ -7,8 +7,8 @@ void Camera::UpdateCamera(float dt)
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
 	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
-	pitch -= std::min(pitch,  90.0f);
-	pitch -= std::max(pitch, -90.0f);
+	pitch = std::min(pitch,  90.0f);
+	pitch = std::max(pitch, -90.0f);
 	
 	if (yaw < 0)
 	{

@@ -35,7 +35,6 @@ Renderer::~Renderer(void)
 void Renderer::UpdateScene(float dt)
 {
 	camera->UpdateCamera(dt);
-	camera->SetPitch(-90.0f);
 	viewMatrix = camera->BuildViewMatrix();
 }
 
