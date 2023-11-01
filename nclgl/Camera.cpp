@@ -7,8 +7,8 @@ void Camera::UpdateCamera(float dt)
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
 	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
 
-	pitch -= std::min(pitch,  90.0f);
-	pitch -= std::max(pitch, -90.0f);
+	pitch = std::min(pitch,  90.0f);
+	pitch = std::max(pitch, -90.0f);
 	
 	if (yaw < 0)
 	{
@@ -26,7 +26,7 @@ void Camera::UpdateCamera(float dt)
 	Vector3 forward = rotation * Vector3(0, 0, -1);
 	Vector3 right = rotation * Vector3(1, 0, 0);
 
-	float speed = 120.0f * dt * 3.0f;
+	float speed = 120.0f * dt * 8.0f;
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_W))
 	{
@@ -38,20 +38,20 @@ void Camera::UpdateCamera(float dt)
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A))
 	{
-		position += right * speed;
+		position -= right * speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D))
 	{
-		position -= right * speed;
+		position += right * speed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT))
 	{
-		position.y += speed;
+		position.y -= speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE))
 	{
-		position.y -= speed;
+		position.y += speed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q))
