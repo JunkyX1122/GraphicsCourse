@@ -38,20 +38,20 @@ void Camera::UpdateCamera(float dt)
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A))
 	{
-		position += right * speed;
+		position -= right * speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D))
 	{
-		position -= right * speed;
+		position += right * speed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT))
 	{
-		position.y += speed;
+		position.y -= speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE))
 	{
-		position.y -= speed;
+		position.y += speed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q))
