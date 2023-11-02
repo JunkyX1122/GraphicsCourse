@@ -21,7 +21,7 @@ void Renderer::UpdateScene(float dt) {
 }
 
 void Renderer::RenderScene()	{
-	glClearColor(0.2f,0.2f,0.2f,1.0f);
+	glClearColor(0.0f,0.0f,0.0f,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);	
 
 	BindShader(basicShader);
