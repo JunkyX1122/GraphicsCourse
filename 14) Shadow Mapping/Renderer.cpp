@@ -66,7 +66,7 @@ void Renderer::UpdateScene(float dt)
 
 	for (int i = 1; i < sceneTransforms.size(); i++)
 	{
-		Vector3 t = Vector3(-10 * (5 * i), 2.0f + sin(sceneTime * i), 0);
+		Vector3 t = Vector3(-10 + (5 * i), 2.0f + sin(sceneTime * i), 0);
 		sceneTransforms[i] = Matrix4::Translation(t) * Matrix4::Rotation(sceneTime * 10 * i, Vector3(1, 0, 0));
 	}
 }
@@ -125,7 +125,7 @@ void Renderer::DrawMainScene()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	
-	for (int i = 0; i < 4; ++i) 
+	for (int i = 0; i < 4; i++) 
 	{
 		modelMatrix = sceneTransforms[i];
 		UpdateShaderMatrices();
