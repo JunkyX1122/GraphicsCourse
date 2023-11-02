@@ -16,19 +16,32 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	earthBump = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	cubeMap = 
 		SOIL_load_OGL_cubemap(
-			TEXTUREDIR"rusted_west.jpg",
-			TEXTUREDIR"rusted_east.jpg",
-			TEXTUREDIR"rusted_up.jpg",
-			TEXTUREDIR"rusted_down.jpg",
-			TEXTUREDIR"rusted_south.jpg",
-			TEXTUREDIR"rusted_north.jpg",
+			TEXTUREDIR"rusted_west_new.JPG",
+			TEXTUREDIR"rusted_east_new.JPG",
+			TEXTUREDIR"rusted_up_new.JPG",
+			TEXTUREDIR"rusted_down_new.JPG",
+			TEXTUREDIR"rusted_south_new.JPG",
+			TEXTUREDIR"rusted_north_new.JPG",
 			SOIL_LOAD_RGB, 
 			SOIL_CREATE_NEW_ID, 
 			0);
-	if (!earthTex || !earthBump || !cubeMap || !waterTex)
+	if (!earthTex)
 	{
 		return;
 	}
+	if (!earthBump)
+	{
+		return;
+	}
+	if (!cubeMap)
+	{
+		return;
+	}
+	if (!waterTex)
+	{
+		return;
+	}
+
 	SetTextureRepeating(waterTex, true);
 	SetTextureRepeating(earthTex, true);
 	SetTextureRepeating(earthBump, true);
@@ -39,7 +52,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	if (!reflectShader->LoadSuccess() || !skyboxShader->LoadSuccess() || !lightShader->LoadSuccess()) { return; }
 	Vector3 heightmapSize = heightMap->GetHeightMapSize();
 	
-	camera = new Camera(-45.0f, 0.0f, heightmapSize * Vector3(0.5f, 5.0f, 0.5f));
+	camera = new Camera(-45.0f, 0.0f,heightmapSize * Vector3(0.5f, 5.0f, 0.5f));
 	light = new Light(heightmapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightmapSize.x);
 	projMatrix = Matrix4::Perspective(1.0f, 15000.0f, (float)width / (float)height, 45.0f);
 
