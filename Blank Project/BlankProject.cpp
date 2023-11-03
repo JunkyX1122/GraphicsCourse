@@ -13,11 +13,17 @@ int main()	{
 		return -1;
 	}
 
-	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE)){
+	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE))
+	{
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_0))
+		{
+			renderer.SetSceneType(renderer.GetSceneType() == 0 ? 1 : 0);
+		}
 		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());
 		renderer.RenderScene();
 		renderer.SwapBuffers();
-		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) {
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) 
+		{
 			Shader::ReloadAllShaders();
 		}
 	}
