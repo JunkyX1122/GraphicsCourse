@@ -5,14 +5,16 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"noisea.png");
+	heightMap = new HeightMap(TEXTUREDIR"Terrain_1.png");
 	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	SetTextureRepeating(groundTexture, true);
 	SetTextureRepeating(groundBumpMap, true);
-	Vector3 heightmapSize = heightMap->GetHeightMapSize();
+	Vector3 heightMapSize = heightMap->GetHeightMapSize();
 	//========================================================================
-	camera = new Camera(-45.0f, 0.0f, heightmapSize * Vector3(0.5f, 5.0f, 0.5f));
+	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 5.0f, 0.5f));
+	
+	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
 	sceneShader = new Shader("bumpVertex.glsl", "bufferFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
@@ -22,79 +24,29 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	if (!pointLightShader->LoadSuccess()) return;
 	if (!combineShader->LoadSuccess()) return;
 	//========================================================================
-	//if (!ManageSceneNodes()) return;
+	if (!ManageSceneNodes()) return;
 
 	//========================================================================
 	if (!CreateBuffers()) return;
 	//========================================================================
 	
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	init = true;
 }
 
-bool Renderer::CreateBuffers()
-{
-	glGenFramebuffers(1, &bufferFBO);
-	glGenFramebuffers(1, &pointLightFBO);
 
-	GLenum buffers[2] =
-	{
-		GL_COLOR_ATTACHMENT0,
-		GL_COLOR_ATTACHMENT1
-	};
-
-	GenerateScreenTexture(bufferDepthTex, true);
-	GenerateScreenTexture(bufferColourTex);
-	GenerateScreenTexture(bufferNormalTex);
-	GenerateScreenTexture(lightDiffuseTex);
-	GenerateScreenTexture(lightSpecularTex);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bufferNormalTex, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, bufferDepthTex, 0);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return false;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, pointLightFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, lightDiffuseTex, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, lightSpecularTex, 0);
-	glDrawBuffers(2, buffers);
-
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return false;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-
-	return true;
-}
-
-void Renderer::GenerateScreenTexture(GLuint& into, bool depth)
-{
-	glGenTextures(1, &into);
-	glBindTexture(GL_TEXTURE_2D, into);
-
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	GLuint format = depth ? GL_DEPTH_COMPONENT24 : GL_RGBA8;
-	GLuint type = depth ? GL_DEPTH_COMPONENT : GL_RGBA;
-
-	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, type, GL_UNSIGNED_BYTE, NULL);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
+//
 
 Renderer::~Renderer(void)	
 {
 	delete camera;
 	delete heightMap;
 	delete quad;
+	delete globalSceneLight;
 
 	delete sceneShader;
 	delete combineShader;
@@ -118,20 +70,20 @@ Renderer::~Renderer(void)
 void Renderer::UpdateScene(float dt) 
 {
 	camera->UpdateCamera(dt);
+	viewMatrix = camera->BuildViewMatrix();
+	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
+	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 }
 
 void Renderer::RenderScene()	
 {
-	//glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	FillBuffers();
 	DrawPointLights();
 	CombineBuffers();
-
-	
-	
 }
 
 

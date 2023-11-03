@@ -40,7 +40,6 @@ protected:
 	void DrawNodes();
 	void DrawNodes(SceneNode* n);
 
-
 	Shader* sceneShader;
 	Shader* pointLightShader;
 	Shader* combineShader;
@@ -48,6 +47,7 @@ protected:
 	HeightMap* heightMap;
 	GLuint groundTexture;
 	GLuint groundBumpMap;
+	void RenderTerrain();
 
 	GLuint bufferFBO;
 	GLuint bufferColourTex;
@@ -59,7 +59,7 @@ protected:
 	GLuint lightSpecularTex;
 	Mesh* quad;
 
-	Light* light;
+	Light* globalSceneLight;
 
 	Mesh*	triangle;
 	Shader* basicShader;
