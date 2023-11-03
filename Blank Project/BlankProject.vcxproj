@@ -138,6 +138,8 @@
   <ItemGroup>
     <ClCompile Include="BlankProject.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Renderer_Buffers.cpp" />
+    <ClCompile Include="Renderer_ObjectNodes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />

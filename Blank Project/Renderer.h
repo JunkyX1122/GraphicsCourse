@@ -1,8 +1,11 @@
 #pragma once
 #include "../NCLGL/OGLRenderer.h"
-class Camera;
-class HeightMap;
-class Light;
+#include "../nclgl/Camera.h"
+#include "../nclgl/HeightMap.h"
+#include "../nclgl/Light.h"
+#include "../nclgl/SceneNode.h"
+#include "../nclgl/Frustum.h"
+#include <algorithm>
 
 class Renderer : public OGLRenderer	{
 public:
@@ -24,6 +27,19 @@ public:
 protected:
 	int renderSceneType;
 	Camera* camera;
+
+	SceneNode* planetSurfaceRoot;
+	SceneNode* spaceRoot;
+	Frustum frameFrustum;
+	vector<SceneNode*> transparentNodeList;
+	vector<SceneNode*> nodeList;
+	bool ManageSceneNodes();
+	void BuildNodeLists(SceneNode* from);
+	void SortNodeLists();
+	void ClearNodeLists();
+	void DrawNodes();
+	void DrawNodes(SceneNode* n);
+
 
 	Shader* sceneShader;
 	Shader* pointLightShader;
