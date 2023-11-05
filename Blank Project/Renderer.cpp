@@ -6,9 +6,9 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	quad = Mesh::GenerateQuad();
 	skyBox = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"terrain_1.png");
-	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	heightMap = new HeightMap(TEXTUREDIR"terrain_1.png", 2048.0f);
+	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"terrain_1.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	SetTextureRepeating(groundTexture, true);
 	SetTextureRepeating(groundBumpMap, true);
 

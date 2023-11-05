@@ -62,6 +62,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	waterRotate = 0.0f;
 	waterCycle = 0.0f;
+	waterCount = 0.0f;
 	init = true;
 }
 
@@ -82,6 +83,7 @@ void Renderer::UpdateScene(float dt)
 	viewMatrix = camera->BuildViewMatrix();
 	waterRotate += dt * 2.0f;
 	waterCycle += dt * 0.25f;
+	waterCount += dt * 1.0f;
 }
 
 void Renderer::RenderScene()
@@ -105,6 +107,8 @@ void Renderer::DrawHeightMap()
 	BindShader(lightShader);
 	SetShaderLight(*light);
 	glUniform3fv(glGetUniformLocation(lightShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
+
+	glUniform1f(glGetUniformLocation(lightShader->GetProgram(), "timer"), waterCount);
 
 	glUniform1i(glGetUniformLocation(lightShader->GetProgram(), "diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);

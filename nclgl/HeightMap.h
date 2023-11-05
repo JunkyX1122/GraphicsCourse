@@ -6,11 +6,13 @@
 class HeightMap : public Mesh
 {
 public:
-	HeightMap(const std::string& name);
+	HeightMap(const std::string& name, float textureSize);
 	~HeightMap(void) {};
 
 	Vector3 GetHeightMapSize() const { return heightMapSize; }
+	
 
 protected:
 	Vector3 heightMapSize;
+	float textureSize;
 };
