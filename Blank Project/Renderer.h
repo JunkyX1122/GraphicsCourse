@@ -60,6 +60,10 @@ protected:
 	Mesh* quad;
 
 	Light* globalSceneLight;
+	GLuint skyBox_Planet;
+	Shader* skybox_Planet_Shader;
+	Mesh* skyBox;
+	void DrawSkybox();
 
 	Mesh*	triangle;
 	Shader* basicShader;

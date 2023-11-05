@@ -4,12 +4,30 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 {
 	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
+	skyBox = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"Terrain_1.png");
+	heightMap = new HeightMap(TEXTUREDIR"terrain_1.png");
 	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	SetTextureRepeating(groundTexture, true);
 	SetTextureRepeating(groundBumpMap, true);
+
+	skyBox_Planet =
+		SOIL_load_OGL_cubemap(
+			TEXTUREDIR"rusted_west_new.JPG",
+			TEXTUREDIR"rusted_east_new.JPG",
+			TEXTUREDIR"rusted_up_new.JPG",
+			TEXTUREDIR"rusted_down_new.JPG",
+			TEXTUREDIR"rusted_south_new.JPG",
+			TEXTUREDIR"rusted_north_new.JPG",
+			SOIL_LOAD_RGB,
+			SOIL_CREATE_NEW_ID,
+			0);
+
+	if (!heightMap) return;
+	if (!groundTexture) return;
+	if (!groundBumpMap) return;
+	if (!skyBox_Planet) return;
 	Vector3 heightMapSize = heightMap->GetHeightMapSize();
 	//========================================================================
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 5.0f, 0.5f));
@@ -20,9 +38,12 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 
+	skybox_Planet_Shader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
+	//skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	if (!sceneShader->LoadSuccess()) return;
 	if (!pointLightShader->LoadSuccess()) return;
 	if (!combineShader->LoadSuccess()) return;
+	if (!skybox_Planet_Shader->LoadSuccess()) return;
 	//========================================================================
 	if (!ManageSceneNodes()) return;
 
@@ -61,12 +82,22 @@ Renderer::~Renderer(void)
 	glDeleteFramebuffers(1, &bufferFBO);
 	glDeleteFramebuffers(1, &pointLightFBO);
 
+	delete skybox_Planet_Shader;
+	delete skyBox;
 
 	delete triangle;
 	delete basicShader;
 	
 }
 
+void Renderer::DrawSkybox() 
+{
+	glDepthMask(GL_FALSE);
+	BindShader(skybox_Planet_Shader);
+	UpdateShaderMatrices();
+	skyBox->Draw();
+	glDepthMask(GL_TRUE);
+}
 void Renderer::UpdateScene(float dt) 
 {
 	camera->UpdateCamera(dt);
@@ -81,9 +112,12 @@ void Renderer::RenderScene()
 	//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
+
 	FillBuffers();
+
 	DrawPointLights();
 	CombineBuffers();
+	
 }
 
 

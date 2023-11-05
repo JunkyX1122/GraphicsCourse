@@ -63,8 +63,9 @@ void Renderer::FillBuffers()
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	UpdateShaderMatrices();
+	DrawSkybox();
 	RenderThings();
-
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
