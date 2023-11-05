@@ -90,14 +90,6 @@ Renderer::~Renderer(void)
 	
 }
 
-void Renderer::DrawSkybox() 
-{
-	glDepthMask(GL_FALSE);
-	BindShader(skybox_Planet_Shader);
-	UpdateShaderMatrices();
-	skyBox->Draw();
-	glDepthMask(GL_TRUE);
-}
 void Renderer::UpdateScene(float dt) 
 {
 	camera->UpdateCamera(dt);
