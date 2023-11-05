@@ -63,7 +63,7 @@ protected:
 	GLuint skyBox_Planet;
 	Shader* skybox_Planet_Shader;
 	Mesh* skyBox;
-	void DrawSkybox();
+	void DrawPlanetSkybox();
 
 	Mesh*	triangle;
 	Shader* basicShader;

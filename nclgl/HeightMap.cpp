@@ -1,6 +1,7 @@
 #include "HeightMap.h"
 #include <iostream>
 
+const float HEIGHTMAP_SCALE = 6.0f;
 HeightMap::HeightMap(const std::string& name)
 {
 	int iWidth, iHeight, iChans;
@@ -18,7 +19,7 @@ HeightMap::HeightMap(const std::string& name)
 	textureCoords = new Vector2[numVertices];
 	indices = new GLuint[numIndices];
 
-	Vector3 vertexScale = Vector3(16.0f, 3.0f, 16.0f);
+	Vector3 vertexScale = Vector3(16.0f, HEIGHTMAP_SCALE, 16.0f);
 	Vector2 textureScale = Vector2(1.0f / 16.0f, 1.0f / 16.0f);
 
 	for (int z = 0; z < iHeight; ++z) 

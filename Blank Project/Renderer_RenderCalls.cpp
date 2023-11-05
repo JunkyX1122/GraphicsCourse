@@ -5,7 +5,7 @@ void Renderer::RenderThings()
 	switch (GetSceneType())
 	{
 	case(0):
-		DrawSkybox();
+		DrawPlanetSkybox();
 		RenderTerrain();
 		BuildNodeLists(planetSurfaceRoot);
 		break;
@@ -18,7 +18,7 @@ void Renderer::RenderThings()
 	//ClearNodeLists();
 }
 
-void Renderer::DrawSkybox()
+void Renderer::DrawPlanetSkybox()
 {
 	glDepthMask(GL_FALSE);
 	BindShader(skybox_Planet_Shader);
