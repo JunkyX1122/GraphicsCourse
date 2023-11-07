@@ -53,6 +53,13 @@ protected:
 	GLuint highGroundBumpMap;
 	void RenderTerrain();
 
+	GLuint waterTex;
+	float waterRotate;
+	float waterCycle;
+	Shader* reflectShader;
+	Mesh* waterQuad;
+	void DrawWater();
+
 	GLuint bufferFBO;
 	GLuint bufferColourTex;
 	GLuint bufferNormalTex;

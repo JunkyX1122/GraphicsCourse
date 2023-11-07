@@ -1,8 +1,8 @@
 #include "HeightMap.h"
 #include <iostream>
 
-const float HEIGHTMAP_SCALE = 6.0f;
-HeightMap::HeightMap(const std::string& name, float textureSize)
+const float HEIGHTMAP_SCALE = 14.0f;
+HeightMap::HeightMap(const std::string& name, float textureSize = 16.0f)
 {
 	int iWidth, iHeight, iChans;
 

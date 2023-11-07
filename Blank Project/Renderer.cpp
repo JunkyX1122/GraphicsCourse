@@ -5,9 +5,21 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
 	skyBox = Mesh::GenerateQuad();
+	waterQuad = Mesh::GenerateQuad();
 	//========================================================================
 	heightMap = new HeightMap(TEXTUREDIR"terrain_2.png", 16.0f);
+	if (!heightMap) return;
+	//========================================================================
+	waterTex = SOIL_load_OGL_texture(TEXTUREDIR"water.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	SetTextureRepeating(waterTex, true);
+	if (!waterTex) return;
 
+	reflectShader = new Shader("reflectVertex.glsl", "reflectFragment.glsl");
+	if (!reflectShader->LoadSuccess()) return;
+
+	waterRotate = 0.0f;
+	waterCycle = 0.0f;
+	//========================================================================
 	seaBedTexture = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	seaBedBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
@@ -25,6 +37,15 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	SetTextureRepeating(highGroundTexture, true);
 	SetTextureRepeating(highGroundBumpMap, true);
 
+	if (!seaBedTexture) return;
+	if (!seaBedBumpMap) return;
+
+	if (!groundTexture) return;
+	if (!groundBumpMap) return;
+
+	if (!highGroundTexture) return;
+	if (!highGroundBumpMap) return;
+	//========================================================================
 	skyBox_Planet =
 		SOIL_load_OGL_cubemap(
 			TEXTUREDIR"rusted_west_new.JPG",
@@ -36,39 +57,24 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 			SOIL_LOAD_RGB,
 			SOIL_CREATE_NEW_ID,
 			0);
-
-	if (!heightMap) return;
-
-	if (!seaBedTexture) return;
-	if (!seaBedBumpMap) return;
-
-	if (!groundTexture) return;
-	if (!groundBumpMap) return;
-
-	if (!highGroundTexture) return;
-	if (!highGroundBumpMap) return;
-
 	if (!skyBox_Planet) return;
-	Vector3 heightMapSize = heightMap->GetHeightMapSize();
+
+	skybox_Planet_Shader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
+	if (!skybox_Planet_Shader->LoadSuccess()) return;
 	//========================================================================
-	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 5.0f, 0.5f));
-	
+	Vector3 heightMapSize = heightMap->GetHeightMapSize();
+	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
 	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 
-	skybox_Planet_Shader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
-	//skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	if (!sceneShader->LoadSuccess()) return;
 	if (!pointLightShader->LoadSuccess()) return;
 	if (!combineShader->LoadSuccess()) return;
-	if (!skybox_Planet_Shader->LoadSuccess()) return;
 	//========================================================================
 	if (!ManageSceneNodes()) return;
-
-	//========================================================================
 	if (!CreateBuffers()) return;
 	//========================================================================
 	
@@ -106,6 +112,8 @@ Renderer::~Renderer(void)
 	delete skybox_Planet_Shader;
 	delete skyBox;
 
+	delete waterQuad;
+
 	delete triangle;
 	delete basicShader;
 	
@@ -117,6 +125,9 @@ void Renderer::UpdateScene(float dt)
 	viewMatrix = camera->BuildViewMatrix();
 	projMatrix = Matrix4::Perspective(1.0f, 30000.0f, (float)width / (float)height, 45.0f);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
+
+	waterRotate += dt * 2.0f;
+	waterCycle += dt * 0.25f;
 }
 
 void Renderer::RenderScene()	
