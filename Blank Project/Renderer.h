@@ -22,7 +22,6 @@ public:
 	 
 	 void FillBuffers();
 	 void RenderThings();
-	 void DrawPointLights();
 	 void CombineBuffers();
 protected:
 	int renderSceneType;
@@ -69,12 +68,14 @@ protected:
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
 	Mesh* quad;
+	void DrawPointLights();
 
 	Light* globalSceneLight;
 	GLuint skyBox_Planet;
+	GLuint skyBox_Space;
 	Shader* skybox_Planet_Shader;
 	Mesh* skyBox;
-	void DrawPlanetSkybox();
+	void DrawSkybox();
 
 	Mesh*	triangle;
 	Shader* basicShader;

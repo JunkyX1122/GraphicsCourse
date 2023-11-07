@@ -59,6 +59,19 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 			0);
 	if (!skyBox_Planet) return;
 
+	skyBox_Space =
+		SOIL_load_OGL_cubemap(
+			TEXTUREDIR"space_west.png",
+			TEXTUREDIR"space_east.png",
+			TEXTUREDIR"space_up.png",
+			TEXTUREDIR"space_down.png",
+			TEXTUREDIR"space_south.png",
+			TEXTUREDIR"space_north.png",
+			SOIL_LOAD_RGB,
+			SOIL_CREATE_NEW_ID,
+			0);
+	if (!skyBox_Space) return;
+
 	skybox_Planet_Shader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	if (!skybox_Planet_Shader->LoadSuccess()) return;
 	//========================================================================
@@ -87,7 +100,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-
+	
 	init = true;
 }
 
@@ -128,7 +141,7 @@ void Renderer::UpdateScene(float dt)
 {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
-	projMatrix = Matrix4::Perspective(1.0f, 30000.0f, (float)width / (float)height, 45.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 30000.0f, (float)width / (float)height, 90.0f);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 
 	waterRotate += dt * 2.0f;

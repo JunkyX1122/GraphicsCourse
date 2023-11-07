@@ -2,10 +2,11 @@
 
 void Renderer::RenderThings()
 {
+	DrawSkybox();
 	switch (GetSceneType())
 	{
 	case(0):
-		DrawPlanetSkybox();
+		
 		DrawTerrain();
 		DrawWater();
 		BuildNodeLists(planetSurfaceRoot);
@@ -19,10 +20,16 @@ void Renderer::RenderThings()
 	ClearNodeLists();
 }
 
-void Renderer::DrawPlanetSkybox()
+void Renderer::DrawSkybox()
 {
 	glDepthMask(GL_FALSE);
 	BindShader(skybox_Planet_Shader);
+
+	glUniform1i(glGetUniformLocation(sceneShader->GetProgram(), "cubeTex"), 0);
+	glActiveTexture(GL_TEXTURE0 );
+	glBindTexture(GL_TEXTURE_CUBE_MAP, GetSceneType() == 0 ? skyBox_Planet : skyBox_Space);
+
+	
 	UpdateShaderMatrices();
 	skyBox->Draw();
 	glDepthMask(GL_TRUE);
