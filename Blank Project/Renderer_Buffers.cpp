@@ -61,13 +61,9 @@ void Renderer::FillBuffers()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	
 	UpdateShaderMatrices();
-	
 	RenderThings();
-	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 

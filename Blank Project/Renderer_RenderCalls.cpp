@@ -6,7 +6,7 @@ void Renderer::RenderThings()
 	{
 	case(0):
 		DrawPlanetSkybox();
-		RenderTerrain();
+		DrawTerrain();
 		DrawWater();
 		BuildNodeLists(planetSurfaceRoot);
 		break;
@@ -28,7 +28,7 @@ void Renderer::DrawPlanetSkybox()
 	glDepthMask(GL_TRUE);
 }
 
-void Renderer::RenderTerrain()
+void Renderer::DrawTerrain()
 {
 	//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	BindShader(sceneShader);

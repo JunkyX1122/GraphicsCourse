@@ -51,7 +51,7 @@ protected:
 	GLuint groundBumpMap;
 	GLuint highGroundTexture;
 	GLuint highGroundBumpMap;
-	void RenderTerrain();
+	void DrawTerrain();
 
 	GLuint waterTex;
 	float waterRotate;
