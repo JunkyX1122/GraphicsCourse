@@ -45,8 +45,12 @@ protected:
 	Shader* combineShader;
 
 	HeightMap* heightMap;
+	GLuint seaBedTexture;
+	GLuint seaBedBumpMap;
 	GLuint groundTexture;
 	GLuint groundBumpMap;
+	GLuint highGroundTexture;
+	GLuint highGroundBumpMap;
 	void RenderTerrain();
 
 	GLuint bufferFBO;

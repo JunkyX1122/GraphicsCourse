@@ -6,11 +6,24 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	quad = Mesh::GenerateQuad();
 	skyBox = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"terrain_1.png", 2048.0f);
-	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"terrain_1.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	heightMap = new HeightMap(TEXTUREDIR"terrain_2.png", 16.0f);
+
+	seaBedTexture = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	seaBedBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"red.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	highGroundTexture = SOIL_load_OGL_texture(TEXTUREDIR"black.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	highGroundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	SetTextureRepeating(seaBedTexture, true);
+	SetTextureRepeating(seaBedBumpMap, true);
+
 	SetTextureRepeating(groundTexture, true);
 	SetTextureRepeating(groundBumpMap, true);
+
+	SetTextureRepeating(highGroundTexture, true);
+	SetTextureRepeating(highGroundBumpMap, true);
 
 	skyBox_Planet =
 		SOIL_load_OGL_cubemap(
@@ -25,8 +38,16 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 			0);
 
 	if (!heightMap) return;
+
+	if (!seaBedTexture) return;
+	if (!seaBedBumpMap) return;
+
 	if (!groundTexture) return;
 	if (!groundBumpMap) return;
+
+	if (!highGroundTexture) return;
+	if (!highGroundBumpMap) return;
+
 	if (!skyBox_Planet) return;
 	Vector3 heightMapSize = heightMap->GetHeightMapSize();
 	//========================================================================
@@ -34,7 +55,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
-	sceneShader = new Shader("bumpVertex.glsl", "bufferFragment.glsl");
+	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 
@@ -94,7 +115,7 @@ void Renderer::UpdateScene(float dt)
 {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
-	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 30000.0f, (float)width / (float)height, 45.0f);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 }
 
