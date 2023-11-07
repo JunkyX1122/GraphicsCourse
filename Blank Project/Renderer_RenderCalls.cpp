@@ -11,12 +11,12 @@ void Renderer::RenderThings()
 		BuildNodeLists(planetSurfaceRoot);
 		break;
 	case(1):
-		BuildNodeLists(spaceRoot);
+		//BuildNodeLists(spaceRoot);
 		break;
 	}
-	//SortNodeLists();
-	//DrawNodes();
-	//ClearNodeLists();
+	SortNodeLists();
+	DrawNodes();
+	ClearNodeLists();
 }
 
 void Renderer::DrawPlanetSkybox()

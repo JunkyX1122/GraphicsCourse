@@ -7,7 +7,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"terrain_2.png", 16.0f);
+	heightMap = new HeightMap(TEXTUREDIR"noise.png", 16.0f);
 	if (!heightMap) return;
 	//========================================================================
 	waterTex = SOIL_load_OGL_texture(TEXTUREDIR"water.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
@@ -70,10 +70,15 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 
+	basicShader = new Shader("sceneVertex.glsl", "sceneFragment.glsl");
+
 	if (!sceneShader->LoadSuccess()) return;
 	if (!pointLightShader->LoadSuccess()) return;
 	if (!combineShader->LoadSuccess()) return;
 	//========================================================================
+	planetSurfaceRoot = new SceneNode();
+	spaceRoot = new SceneNode();
+
 	if (!ManageSceneNodes()) return;
 	if (!CreateBuffers()) return;
 	//========================================================================
@@ -114,7 +119,7 @@ Renderer::~Renderer(void)
 
 	delete waterQuad;
 
-	delete triangle;
+	//delete triangle;
 	delete basicShader;
 	
 }
@@ -128,6 +133,8 @@ void Renderer::UpdateScene(float dt)
 
 	waterRotate += dt * 2.0f;
 	waterCycle += dt * 0.25f;
+	planetSurfaceRoot->Update(dt);
+	spaceRoot->Update(dt);
 }
 
 void Renderer::RenderScene()	

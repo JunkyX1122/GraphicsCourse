@@ -78,4 +78,5 @@ protected:
 
 	Mesh*	triangle;
 	Shader* basicShader;
+	GLuint basicTexture;
 };
