@@ -8,9 +8,9 @@ bool Renderer::ManageSceneNodes()
 	{
 		SceneNode* s = new SceneNode();
 		s->SetColour(Vector4(1.0f, 1.0f, 1.0f, 0.5f));
-		s->SetTransform(Matrix4::Translation(Vector3(heightMapSize.x * 0.5f, heightMapSize.y * 1.2f, heightMapSize.z * 0.5f + 100.0f + 100 * i)));
-		s->SetModelScale(Vector3(10000.0f, 10000.0f, 10000.0f));
-		s->SetBoundingRadius(10000.0f);
+		s->SetTransform(Matrix4::Translation(Vector3(heightMapSize.x * 0.5f, heightMapSize.y * 1.2f, heightMapSize.z * 0.5f + 100.0f + 1000.0f * i)));
+		s->SetModelScale(Vector3(1000.0f, 1000.0f, 1000.0f));
+		s->SetBoundingRadius(1000.0f);
 		s->SetMesh(quad);
 		s->SetTexture(seaBedTexture);
 		planetSurfaceRoot->AddChild(s);
@@ -24,7 +24,7 @@ void Renderer::BuildNodeLists(SceneNode* from)
 	
 	if (frameFrustum.InsideFrustum(*from))
 	{
-		std::cout << "here";
+		//std::cout << "here";
 		Vector3 dir = from->GetWorldTransform().GetPositionVector() - camera->GetPosition();
 		from->SetCameraDistance(Vector3::Dot(dir, dir));
 

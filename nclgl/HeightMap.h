@@ -15,4 +15,6 @@ public:
 protected:
 	Vector3 heightMapSize;
 	float textureSize;
+
+	int CalculateOffset(int x, int z, int iWidth);
 };

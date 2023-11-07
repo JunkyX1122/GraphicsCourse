@@ -7,7 +7,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"noise.png", 16.0f);
+	heightMap = new HeightMap(TEXTUREDIR"terrain_3.png", 16.0f);
 	if (!heightMap) return;
 	//========================================================================
 	waterTex = SOIL_load_OGL_texture(TEXTUREDIR"water.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
