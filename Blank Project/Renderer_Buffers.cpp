@@ -1,5 +1,6 @@
 #include "Renderer.h"
 
+
 bool Renderer::CreateBuffers()
 {
 	glGenFramebuffers(1, &bufferFBO);
@@ -97,14 +98,14 @@ void Renderer::DrawPointLights()
 	glUniformMatrix4fv(glGetUniformLocation(pointLightShader->GetProgram(), "inverseProjView"), 1, false, inViewProj.values);
 
 	UpdateShaderMatrices();
-	/*
+	//*
 	for (int i = 0; i < LIGHT_NUM; i++)
 	{
 		Light& l = pointLights[i];
 		SetShaderLight(l);
 		sphere->Draw();
 	}
-	*/
+	//*/
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace(GL_BACK);
 	glDepthFunc(GL_LEQUAL);

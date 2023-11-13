@@ -4,17 +4,54 @@ bool Renderer::ManageSceneNodes()
 {
 	
 	Vector3 heightMapSize = heightMap->GetHeightMapSize();
-	for (int i = 0; i < 5; i++)
+	const int perRotation = 20;
+	const int rotationCycles = 9;
+	const int totalRocks = perRotation * rotationCycles;
+
+	int lbR = 0, ubR = 360;
+
+	float scaleVectors[3];
+	float lowerBounds[3] = { 700, 700, 700 };
+	float upperBounds[3] = { 900, 1700, 900 };
+
+
+	for (int i = 0; i < totalRocks; i++)
 	{
-		SceneNode* s = new SceneNode();
-		s->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-		s->SetTransform(Matrix4::Translation(Vector3(heightMapSize.x * 0.5f, heightMapSize.y * 1.2f, heightMapSize.z * 0.5f + 100.0f + 5000.0f * i)));
-		s->SetModelScale(Vector3(1000.0f, 1000.0f, 1000.0f));
-		s->SetBoundingRadius(1000.0f);
-		s->SetMesh(rockModel1);
-		s->SetTexture(rockTexture1);
-		s->SetBump(rockBump1);
-		planetSurfaceRoot->AddChild(s);
+		float heightMapCentre = (heightMapSize.x / 16) / 2;
+		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
+		float angle = (2 * PI) / 20 * i * 0.85f;
+		int x = round(heightMapCentre + heightMapRadius * cos(angle));
+		int z = round(heightMapCentre + heightMapRadius * sin(angle));
+
+		float y = heightMap->GetHeightAtCoord(x, z);
+
+		if (y != NULL && y < heightMapSize.y / 8 * 2)
+		{
+			float rotationX = (rand() % (lbR - ubR + 1)) + lbR;
+			float rotationY = (rand() % (lbR - ubR + 1)) + lbR;
+			
+
+			SceneNode* s = new SceneNode();
+			s->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
+
+			s->SetTransform(
+				Matrix4::Translation(Vector3(x * 16, y, z * 16)) *
+				Matrix4::Rotation(rotationY, Vector3(0, 1, 0)));
+
+			
+			for (int t = 0; t < 3; t++)
+			{
+				int lbS = lowerBounds[t], ubS = upperBounds[t];
+				scaleVectors[t] = (rand() % (lbS - ubS + 1)) + lbS;
+			}
+			s->SetModelScale(Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]));
+			s->SetBoundingRadius(scaleVectors[1] * 1.1f);
+			s->SetMesh(rockModel1);
+			s->SetTexture(rockTexture1);
+			s->SetBump(rockBump1);
+			planetSurfaceRoot->AddChild(s);
+		}
 	}
 
 	return true;

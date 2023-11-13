@@ -6,7 +6,7 @@
 #include "../nclgl/SceneNode.h"
 #include "../nclgl/Frustum.h"
 #include <algorithm>
-
+#define LIGHT_NUM 32
 class Renderer : public OGLRenderer	{
 public:
 	Renderer(Window &parent);
@@ -79,7 +79,9 @@ protected:
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
+	Mesh* sphere;
 	Mesh* quad;
+	Light* pointLights;
 	void DrawPointLights();
 
 	Light* globalSceneLight;

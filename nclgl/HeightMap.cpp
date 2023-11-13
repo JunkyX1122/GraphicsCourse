@@ -4,7 +4,7 @@
 const float HEIGHTMAP_SCALE = 30.0f;
 HeightMap::HeightMap(const std::string& name, float textureSize = 16.0f, int smoothLevel = 0)
 {
-	int iWidth, iHeight, iChans;
+	
 
 	unsigned char* data = SOIL_load_image(name.c_str(), &iWidth, &iHeight, &iChans, 1);
 
@@ -114,4 +114,12 @@ HeightMap::HeightMap(const std::string& name, float textureSize = 16.0f, int smo
 int HeightMap::CalculateOffset(int x, int z, int iWidth)
 {
 	return (z * iWidth) + x;
+}
+
+float HeightMap::GetHeightAtCoord(int x, int z)
+{
+	if (x < 0 || x >= iWidth - 1) return NULL;
+	if (z < 0 || z >= iHeight - 1) return NULL;
+	int offset = CalculateOffset(x, z, iWidth);
+	return vertices[offset].y;
 }

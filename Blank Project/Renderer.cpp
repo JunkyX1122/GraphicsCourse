@@ -4,6 +4,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 {
 	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
+	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
 
@@ -92,6 +93,20 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
+	pointLights = new Light[LIGHT_NUM];
+	for (int i = 0; i < LIGHT_NUM; i++)
+	{
+		Light& l = pointLights[i];
+		l.SetPosition(Vector3(rand() % (int)heightMapSize.x, heightMapSize.y * 0.5f, rand() % (int)heightMapSize.z));
+
+		l.SetColour(Vector4(
+			0.5f + (float)(rand() / (float)RAND_MAX),
+			0.5f + (float)(rand() / (float)RAND_MAX),
+			0.5f + (float)(rand() / (float)RAND_MAX),
+			1));
+		l.SetRadius(15000.0f);
+	}
+	//========================================================================
 	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
@@ -156,7 +171,7 @@ void Renderer::UpdateScene(float dt)
 {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
-	projMatrix = Matrix4::Perspective(1.0f, 30000.0f, (float)width / (float)height, 90.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 90000.0f, (float)width / (float)height, 90.0f);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 
 	waterRotate += dt * 2.0f;

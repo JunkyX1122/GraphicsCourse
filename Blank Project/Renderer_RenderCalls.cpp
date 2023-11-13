@@ -8,15 +8,16 @@ void Renderer::RenderThings()
 	case(0):
 		
 		DrawTerrain();
-		DrawWater();
 		BuildNodeLists(planetSurfaceRoot);
+		SortNodeLists();
+		DrawNodes();
+		DrawWater();
 		break;
 	case(1):
 		//BuildNodeLists(spaceRoot);
 		break;
 	}
-	SortNodeLists();
-	DrawNodes();
+	
 	ClearNodeLists();
 }
 
