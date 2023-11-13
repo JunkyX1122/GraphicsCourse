@@ -48,7 +48,7 @@ void main(void)
 	float attenuation = 1.0 - clamp(distance / lightRadius, 0.0, 1.0);
 
 	float specFactor = clamp(dot(halfDir, bumpNormal), 0.0, 1.0);
-	specFactor = pow(specFactor, 60.0);
+	specFactor = pow(specFactor, 120.0);
 
 	vec3 surface = (diffuse.rgb * lightColour.rgb);
 

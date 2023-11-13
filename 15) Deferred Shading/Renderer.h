@@ -42,4 +42,6 @@ protected:
 	Camera* camera;
 	GLuint earthTex;
 	GLuint earthBump;
+
+	float sceneTime;
 };

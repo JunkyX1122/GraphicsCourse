@@ -28,7 +28,7 @@ void Camera::UpdateCamera(float dt)
 	float speedMultiplier = 7.5;
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_CONTROL))
 	{
-		speedMultiplier *= 3.0f;
+		speedMultiplier *= 9.0f;
 	}
 
 	float speed = 120.0f * dt * speedMultiplier;

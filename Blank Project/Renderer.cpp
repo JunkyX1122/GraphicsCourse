@@ -5,7 +5,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"Terrain_1.png");
+	heightMap = new HeightMap(TEXTUREDIR"Terrain_2.png");
 	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	SetTextureRepeating(groundTexture, true);
@@ -71,7 +71,7 @@ void Renderer::UpdateScene(float dt)
 {
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
-	projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 20000.0f, (float)width / (float)height, 45.0f);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 }
 

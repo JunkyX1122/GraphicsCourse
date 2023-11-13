@@ -3,13 +3,13 @@
 #include "../nclgl/Camera.h"
 #include "../nclgl/Light.h"
 
-const int LIGHT_NUM = 32;
+const int LIGHT_NUM = 128;
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 {
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	quad = Mesh::GenerateQuad();
-	heightMap = new HeightMap(TEXTUREDIR"noisea.png");
+	heightMap = new HeightMap(TEXTUREDIR"noise.png");
 
 	
 
@@ -39,7 +39,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 		l.SetRadius(250.0f + (rand() % 250));
 	}
 
-	sceneShader = new Shader("bumpVertex.glsl", "bufferFragment.glsl");
+	sceneShader = new Shader("bumpVertex.glsl", "bufferFragmentOld.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 	
@@ -128,6 +128,15 @@ void Renderer::GenerateScreenTexture(GLuint& into, bool depth)
 void Renderer::UpdateScene(float dt)
 {
 	camera->UpdateCamera(dt);
+	sceneTime += 3.0f;
+	Vector3 heightmapSize = heightMap->GetHeightMapSize();
+	for (int i = 0; i < LIGHT_NUM; i++)
+	{
+		Light& l = pointLights[i];
+		l.SetPosition(Vector3(l.GetPosition().x + 10.0f * sinf(sceneTime * (PI / 180)), 150.0f + 150.0f * sinf(sceneTime * (PI / 180)), l.GetPosition().z));
+
+	
+	}
 }
 
 void Renderer::RenderScene()
