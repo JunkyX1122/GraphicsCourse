@@ -13,7 +13,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	shader = new Shader("texturedVertex.glsl", "texturedFragment.glsl");
 	if (!shader->LoadSuccess()) return;
 
-	terrainTex = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	terrainTex = SOIL_load_OGL_texture(TEXTUREDIR"noise.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	if (!terrainTex) return;
 

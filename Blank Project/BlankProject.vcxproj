@@ -140,6 +140,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Renderer_Buffers.cpp" />
     <ClCompile Include="Renderer_ObjectNodes.cpp" />
+    <ClCompile Include="Renderer_RenderCalls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />

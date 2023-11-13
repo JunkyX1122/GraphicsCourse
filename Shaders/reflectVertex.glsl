@@ -4,6 +4,7 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projMatrix;
 uniform mat4 textureMatrix;
+uniform float timer;
 
 in vec3 position;
 in vec3 normal;
@@ -27,6 +28,7 @@ void main(void)
 	vec4 worldPos = (modelMatrix * vec4(position, 1));
 
 	OUT.worldPos = worldPos.xyz;
+
 
 	gl_Position = (projMatrix * viewMatrix) * worldPos;
 }

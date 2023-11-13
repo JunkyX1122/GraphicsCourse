@@ -22,7 +22,6 @@ public:
 	 
 	 void FillBuffers();
 	 void RenderThings();
-	 void DrawPointLights();
 	 void CombineBuffers();
 protected:
 	int renderSceneType;
@@ -45,9 +44,20 @@ protected:
 	Shader* combineShader;
 
 	HeightMap* heightMap;
+	GLuint seaBedTexture;
+	GLuint seaBedBumpMap;
 	GLuint groundTexture;
 	GLuint groundBumpMap;
-	void RenderTerrain();
+	GLuint highGroundTexture;
+	GLuint highGroundBumpMap;
+	void DrawTerrain();
+
+	GLuint waterTex;
+	float waterRotate;
+	float waterCycle;
+	Shader* reflectShader;
+	Mesh* waterQuad;
+	void DrawWater();
 
 	GLuint bufferFBO;
 	GLuint bufferColourTex;
@@ -58,9 +68,16 @@ protected:
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
 	Mesh* quad;
+	void DrawPointLights();
 
 	Light* globalSceneLight;
+	GLuint skyBox_Planet;
+	GLuint skyBox_Space;
+	Shader* skybox_Planet_Shader;
+	Mesh* skyBox;
+	void DrawSkybox();
 
 	Mesh*	triangle;
 	Shader* basicShader;
+	GLuint basicTexture;
 };

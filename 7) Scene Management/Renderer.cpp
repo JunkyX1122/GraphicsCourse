@@ -64,6 +64,7 @@ void Renderer::BuildNodeLists(SceneNode* from)
 {
 	if (frameFrustum.InsideFrustum(*from))
 	{
+		std::cout << "here";
 		Vector3 dir = from->GetWorldTransform().GetPositionVector() - camera->GetPosition();
 		from->SetCameraDistance(Vector3::Dot(dir, dir));
 

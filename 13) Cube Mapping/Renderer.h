@@ -35,5 +35,5 @@ protected:
 
 	float waterRotate;
 	float waterCycle;
-
+	float waterCount;
 };
