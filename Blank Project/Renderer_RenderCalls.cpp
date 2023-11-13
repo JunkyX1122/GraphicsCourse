@@ -42,8 +42,8 @@ void Renderer::DrawTerrain()
 	SetShaderLight(*globalSceneLight);
 
 	glUniform3fv(glGetUniformLocation(sceneShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
-	glUniform1f(glGetUniformLocation(sceneShader->GetProgram(), "terrainLowBoundry"), (heightMap->GetHeightMapSize().y) / 8);
-	glUniform1f(glGetUniformLocation(sceneShader->GetProgram(), "terrainHighBoundry"), (heightMap->GetHeightMapSize().y) / 4 * 2);
+	glUniform1f(glGetUniformLocation(sceneShader->GetProgram(), "terrainLowBoundry"), (heightMap->GetHeightMapSize().y) / 8 * 2);
+	glUniform1f(glGetUniformLocation(sceneShader->GetProgram(), "terrainHighBoundry"), (heightMap->GetHeightMapSize().y) / 8 * 4.5f);
 
 	glUniform1i(glGetUniformLocation(sceneShader->GetProgram(), "diffuseTex_low"), 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -94,7 +94,7 @@ void Renderer::DrawWater()
 	Vector3 hSize = heightMap->GetHeightMapSize();
 
 	modelMatrix =
-		Matrix4::Translation(Vector3(hSize.x * 0.5f, hSize.y / 8.0f, hSize.z * 0.5f)) *
+		Matrix4::Translation(Vector3(hSize.x * 0.5f, hSize.y / 8.0f * 1.75f, hSize.z * 0.5f)) *
 		Matrix4::Scale(hSize * 0.5f) *
 		Matrix4::Rotation(-90, Vector3(1, 0, 0));
 

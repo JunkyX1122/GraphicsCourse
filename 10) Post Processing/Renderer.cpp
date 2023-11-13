@@ -7,7 +7,7 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	camera = new Camera(-25.0f, 225.0f, Vector3(-150.0f, 250.0f, -150.0f));
 	quad = Mesh::GenerateQuad();
 	
-	heightMap = new HeightMap(TEXTUREDIR"noise.png ");
+	heightMap = new HeightMap(TEXTUREDIR"noise.png", 8.0f);
 	heightTexture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	sceneShader = new Shader("texturedVertex.glsl", "texturedFragment.glsl");

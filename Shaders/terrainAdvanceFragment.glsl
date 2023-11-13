@@ -15,6 +15,8 @@ uniform float lightRadius;
 uniform float terrainLowBoundry;
 uniform float terrainHighBoundry;
 
+uniform float blendDistance;
+
 in Vertex
 {
 	vec4 colour;

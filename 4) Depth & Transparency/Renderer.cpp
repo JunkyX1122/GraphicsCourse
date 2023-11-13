@@ -81,6 +81,7 @@ void Renderer::ToggleBlendMode()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		break;
 	};
+	std::cout << blendMode << std::endl;
 }
 
 void Renderer::ToggleDepth()

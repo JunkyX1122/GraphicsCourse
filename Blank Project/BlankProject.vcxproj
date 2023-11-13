@@ -141,6 +141,7 @@
     <ClCompile Include="Renderer_Buffers.cpp" />
     <ClCompile Include="Renderer_ObjectNodes.cpp" />
     <ClCompile Include="Renderer_RenderCalls.cpp" />
+    <ClCompile Include="Renderer_Shadows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />

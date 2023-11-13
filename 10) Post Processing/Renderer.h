@@ -18,7 +18,9 @@ protected:
 	void DrawScene();
 
 	Shader* sceneShader;
+	Shader* getBrightShader;
 	Shader* processShader;
+	Shader* combineShader;
 
 	Camera* camera;
 
@@ -27,6 +29,6 @@ protected:
 	GLuint heightTexture;
 	GLuint bufferFBO;
 	GLuint processFBO;
-	GLuint bufferColourTex[2];
+	GLuint bufferColourTex[3];
 	GLuint bufferDepthTex;
 };

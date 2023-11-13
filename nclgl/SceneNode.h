@@ -38,6 +38,9 @@ public:
 	GLuint GetTexture() const { return texture; }
 	void SetTexture(GLuint tex) { texture = tex; }
 
+	GLuint GetBump() const { return bump; }
+	void SetBump(GLuint b) { bump = b; }
+
 	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b)
 	{
 		return (a->distanceFromCamera < b->distanceFromCamera) ? true : false;
@@ -64,4 +67,5 @@ protected:
 	float distanceFromCamera;
 	float boundingRadius;
 	GLuint texture;
+	GLuint bump;
 };

@@ -6,8 +6,21 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	quad = Mesh::GenerateQuad();
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
+
+	rockModel1 = Mesh::LoadFromMeshFile("Rock_02_LOD0 .msh");
+	rockTexture1 =	SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg",	SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	rockBump1 =		SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg",			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	SetTextureRepeating(rockTexture1, true);
+	SetTextureRepeating(rockBump1, true);
+
+	if (!rockModel1) return;
+	if (!rockTexture1) return;
+	if (!rockBump1) return;
+
+
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"terrain_3.png", 16.0f);
+	heightMap = new HeightMap(TEXTUREDIR"terrain_3.png", 128.0f, 8);
 	if (!heightMap) return;
 	//========================================================================
 	waterTex = SOIL_load_OGL_texture(TEXTUREDIR"water.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
@@ -20,14 +33,14 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	waterRotate = 0.0f;
 	waterCycle = 0.0f;
 	//========================================================================
-	seaBedTexture = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	seaBedBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	seaBedTexture = SOIL_load_OGL_texture(TEXTUREDIR"Wet_Soil_Shoeprints_albedo.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	seaBedBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Wet_Soil_Shoeprints_normal.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
-	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"red.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Rock_03_DIFF.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Rock_03_NRM.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
-	highGroundTexture = SOIL_load_OGL_texture(TEXTUREDIR"black.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	highGroundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"white.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	highGroundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Dirty_Grass_DIFF.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	highGroundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Dirty_Grass_NRM.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	SetTextureRepeating(seaBedTexture, true);
 	SetTextureRepeating(seaBedBumpMap, true);
 
@@ -84,10 +97,13 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
 
 	basicShader = new Shader("sceneVertex.glsl", "sceneFragment.glsl");
+	modelShader = new Shader("bumpVertex.glsl", "bumpFragment.glsl");
 
 	if (!sceneShader->LoadSuccess()) return;
 	if (!pointLightShader->LoadSuccess()) return;
 	if (!combineShader->LoadSuccess()) return;
+	if (!modelShader->LoadSuccess()) return;
+
 	//========================================================================
 	planetSurfaceRoot = new SceneNode();
 	spaceRoot = new SceneNode();
@@ -134,7 +150,6 @@ Renderer::~Renderer(void)
 
 	//delete triangle;
 	delete basicShader;
-	
 }
 
 void Renderer::UpdateScene(float dt) 

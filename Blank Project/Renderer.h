@@ -39,9 +39,21 @@ protected:
 	void DrawNodes();
 	void DrawNodes(SceneNode* n);
 
+	Shader* modelShader;
+	Mesh* rockModel1;
+	GLuint rockTexture1;
+	GLuint rockBump1;
+
 	Shader* sceneShader;
 	Shader* pointLightShader;
 	Shader* combineShader;
+
+	GLuint shadowTex;
+	GLuint shadowFBO;
+	Shader* shadowSceneShader;
+	Shader* shadowShader;
+	bool SetUpShadows();
+	void DrawShadows();
 
 	HeightMap* heightMap;
 	GLuint seaBedTexture;
@@ -80,4 +92,5 @@ protected:
 	Mesh*	triangle;
 	Shader* basicShader;
 	GLuint basicTexture;
+	GLuint basicBump;
 };
