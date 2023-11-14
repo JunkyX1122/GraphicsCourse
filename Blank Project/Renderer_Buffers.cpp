@@ -100,7 +100,7 @@ void Renderer::DrawPointLights()
 	UpdateShaderMatrices();
 	if (GetSceneType() == 0)
 	{
-		for (int i = 0; i < LIGHT_NUM; i++)
+		for (int i = 0; i < pointLightPositions.size(); i++)
 		{
 			Light& l = pointLights[i];
 			SetShaderLight(l);

@@ -23,8 +23,20 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
+	
+	planetSurfaceRoot = new SceneNode();
+	spaceRoot = new SceneNode();
+	spaceRoot->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
+
+	if (!ManagePlanetSurfaceSceneNodes()) return;
+	if (!CreateBuffers()) return;
+	if (!ManageSpaceSceneNodes()) return;
+
+	//========================================================================
 	if (!SetUpPointLights()) return;
 	//========================================================================
+
+
 	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
 	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
@@ -40,13 +52,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	if (!planetShader->LoadSuccess()) return;
 
 	//========================================================================
-	planetSurfaceRoot = new SceneNode();
-	spaceRoot = new SceneNode();
-	spaceRoot->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
-
-	if (!ManagePlanetSurfaceSceneNodes()) return;
-	if (!CreateBuffers()) return;
-	if (!ManageSpaceSceneNodes()) return;
+	
 	//========================================================================
 	
 	glEnable(GL_DEPTH_TEST);

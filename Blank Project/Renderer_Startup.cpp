@@ -89,17 +89,141 @@ bool Renderer::SetUpSkybox()
 bool Renderer::SetUpPointLights()
 {
 	pointLights = new Light[LIGHT_NUM];
-	for (int i = 0; i < LIGHT_NUM; i++)
+	for (int i = 0; i < pointLightPositions.size(); i++)
 	{
 		Light& l = pointLights[i];
-		l.SetPosition(Vector3(rand() % (int)heightMapSize.x, heightMapSize.y * 0.5f, rand() % (int)heightMapSize.z));
+		l.SetPosition(pointLightPositions[i]);
 
 		l.SetColour(Vector4(
 			0.5f + (float)(rand() / (float)RAND_MAX),
 			0.5f + (float)(rand() / (float)RAND_MAX),
 			0.5f + (float)(rand() / (float)RAND_MAX),
 			1));
-		l.SetRadius(15000.0f);
+		l.SetRadius(5000.0f);
+	}
+	return true;
+}
+
+bool Renderer::SetUpRocks()
+{
+	rockModel1 = Mesh::LoadFromMeshFile("Rock_02_LOD0 .msh");
+	rockTexture1 = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	rockBump1 = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	SetTextureRepeating(rockTexture1, true);
+	SetTextureRepeating(rockBump1, true);
+
+	if (!rockModel1) return false;
+	if (!rockTexture1) return false;
+	if (!rockBump1) return false;
+
+	Vector3 heightMapSize = heightMap->GetHeightMapSize();
+	const int perRotation = 20;
+	const int rotationCycles = 9;
+	const int totalRocks = perRotation * rotationCycles;
+
+	int lbR = 0, ubR = 360;
+
+	float scaleVectors[3];
+	float lowerBounds[3] = { 700, 700, 700 };
+	float upperBounds[3] = { 900, 1700, 900 };
+
+
+	for (int i = 0; i < totalRocks; i++)
+	{
+		float heightMapCentre = (heightMapSize.x / 16) / 2;
+		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
+		float angle = (2 * PI) / 20 * i * 0.85f;
+		int x = round(heightMapCentre + heightMapRadius * cos(angle));
+		int z = round(heightMapCentre + heightMapRadius * sin(angle));
+
+		float y = heightMap->GetHeightAtCoord(x, z);
+
+		if (y != NULL && y < heightMapSize.y / 8 * 2)
+		{
+			float rotationX = (rand() % (lbR - ubR + 1)) + lbR;
+			float rotationY = (rand() % (lbR - ubR + 1)) + lbR;
+
+			for (int t = 0; t < 3; t++)
+			{
+				int lbS = lowerBounds[t], ubS = upperBounds[t];
+				scaleVectors[t] = (rand() % (lbS - ubS + 1)) + lbS;
+			}
+
+			SceneNode* s = new SceneNode
+			(
+				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
+				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
+				scaleVectors[1] * 1.3f,
+				rockModel1,
+				rockTexture1,
+				rockBump1
+			);
+
+			planetSurfaceRoot->AddChild(s);
+		}
+	}
+	return true;
+}
+
+bool Renderer::SetUpCrystals()
+{
+	crystalModel1 = Mesh::LoadFromMeshFile("Crystalsv03.msh");
+	crystalTexture1 = SOIL_load_OGL_texture(TEXTUREDIR"TranslucentCrystal01_Emission.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	crystalBump1 = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	SetTextureRepeating(crystalTexture1, true);
+	SetTextureRepeating(crystalBump1, true);
+
+	if (!crystalModel1) return false;
+	if (!crystalTexture1) return false;
+	if (!crystalBump1) return false;
+
+	Vector3 heightMapSize = heightMap->GetHeightMapSize();
+	const int perRotation = 20;
+	const int rotationCycles = 9;
+	const int totalRocks = perRotation * rotationCycles;
+
+	int lbR = 0, ubR = 360;
+
+	float scaleVectors[3];
+	float lowerBounds[3] = { 200, 200, 200 };
+	float upperBounds[3] = { 400, 400, 400 };
+
+
+	for (int i = 0; i < totalRocks; i++)
+	{
+		float heightMapCentre = (heightMapSize.x / 16) / 2;
+		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
+		float angle = (2 * PI) / 20 * i * 0.85f + (0.32f * PI);
+		int x = round(heightMapCentre + heightMapRadius * cos(angle));
+		int z = round(heightMapCentre + heightMapRadius * sin(angle));
+
+		float y = heightMap->GetHeightAtCoord(x, z);
+
+		if (y != NULL && y > heightMapSize.y / 8 * 2 && y < heightMapSize.y / 8 * 4)
+		{
+			float rotationX = (rand() % (lbR - ubR + 1)) + lbR;
+			float rotationY = (rand() % (lbR - ubR + 1)) + lbR;
+
+			for (int t = 0; t < 3; t++)
+			{
+				int lbS = lowerBounds[t], ubS = upperBounds[t];
+				scaleVectors[t] = (rand() % (lbS - ubS + 1)) + lbS;
+			}
+
+			SceneNode* s = new SceneNode
+			(
+				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
+				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
+				scaleVectors[1] * 1.3f,
+				crystalModel1,
+				crystalTexture1,
+				crystalBump1
+			);
+			pointLightPositions.push_back(Vector3(x * 16, y, z * 16));
+			planetSurfaceRoot->AddChild(s);
+		}
 	}
 	return true;
 }

@@ -46,6 +46,12 @@ protected:
 	Mesh* rockModel1;
 	GLuint rockTexture1;
 	GLuint rockBump1;
+	bool SetUpRocks();
+
+	Mesh* crystalModel1;
+	GLuint crystalTexture1;
+	GLuint crystalBump1;
+	bool SetUpCrystals();
 
 	Mesh* planetModel;
 	GLuint planetTexture;
@@ -90,6 +96,7 @@ protected:
 	GLuint bufferNormalTex;
 	GLuint bufferDepthTex;
 
+	std::vector<Vector3> pointLightPositions;
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
