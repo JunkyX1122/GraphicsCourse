@@ -65,27 +65,24 @@ bool Renderer::ManagePlanetSurfaceSceneNodes()
 
 bool Renderer::ManageSpaceSceneNodes()
 {
-	planetModel = Mesh::LoadFromMeshFile("Mars.msh");
+	planetModel = Mesh::LoadFromMeshFile("Sphere.msh");
 	planetTexture = SOIL_load_OGL_texture(TEXTUREDIR"Mars.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	//planetBump = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	planetBump = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	if (!planetModel) return false;
 	if (!planetTexture) return false;
-	/*
-	SceneNode* s = new SceneNode();
-	s->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-
-
-	s->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
-
-	s->SetModelScale(Vector3(100.0f, 100.0f, 100.0f));
-	s->SetBoundingRadius(100.0f);
-	s->SetMesh(rockModel1);
-	s->SetTexture(rockTexture1);
-	s->SetBump(rockBump1);
-	planetSurfaceRoot->AddChild(s);
+	SceneNode* s = new SceneNode
+	(
+		Matrix4::Translation(Vector3(100.0f, 1000.0f, 0)),
+		Vector3(10000.0f, 10000.0f, 10000.0f),
+		10000.0f,
+		planetModel,
+		planetTexture,
+		planetBump
+	);
+	s->SetTag(SCENENODETAG_PLANET);
+	spaceRoot->AddChild(s);
 	return true;
-	//if (!rockBump1) return false;*/
 }
 
 void Renderer::BuildNodeLists(SceneNode* from)
@@ -93,7 +90,7 @@ void Renderer::BuildNodeLists(SceneNode* from)
 	
 	if (frameFrustum.InsideFrustum(*from))
 	{
-		//std::cout << "here";
+		std::cout << "here";
 		Vector3 dir = from->GetWorldTransform().GetPositionVector() - camera->GetPosition();
 		from->SetCameraDistance(Vector3::Dot(dir, dir));
 
@@ -163,7 +160,6 @@ void Renderer::DrawNodes(SceneNode* n)
 
 		glUniform3fv(glGetUniformLocation(modelShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
 
-		//UpdateShaderMatrices();
 		SetShaderLight(*globalSceneLight);
 		n->Draw(*this);
 	}

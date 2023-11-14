@@ -14,7 +14,9 @@ void Renderer::RenderThings()
 		DrawWater();
 		break;
 	case(1):
-		//BuildNodeLists(spaceRoot);
+		BuildNodeLists(spaceRoot);
+		SortNodeLists();
+		DrawNodes();
 		break;
 	}
 	
