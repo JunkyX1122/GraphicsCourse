@@ -50,6 +50,7 @@ public:
 	};
 
 	Mesh(void);
+	//Mesh();
 	~Mesh(void);
 
 	void Draw();

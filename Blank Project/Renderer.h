@@ -32,7 +32,8 @@ protected:
 	Frustum frameFrustum;
 	vector<SceneNode*> transparentNodeList;
 	vector<SceneNode*> nodeList;
-	bool ManageSceneNodes();
+	bool ManagePlanetSurfaceSceneNodes();
+	bool ManageSpaceSceneNodes();
 	void BuildNodeLists(SceneNode* from);
 	void SortNodeLists();
 	void ClearNodeLists();
@@ -43,6 +44,10 @@ protected:
 	Mesh* rockModel1;
 	GLuint rockTexture1;
 	GLuint rockBump1;
+
+	Mesh* planetModel;
+	GLuint planetTexture;
+	GLuint planetBump;
 
 	Shader* sceneShader;
 	Shader* pointLightShader;
@@ -62,6 +67,8 @@ protected:
 	GLuint groundBumpMap;
 	GLuint highGroundTexture;
 	GLuint highGroundBumpMap;
+	Vector3 heightMapSize;
+	bool SetUpTerrain();
 	void DrawTerrain();
 
 	GLuint waterTex;
@@ -69,6 +76,7 @@ protected:
 	float waterCycle;
 	Shader* reflectShader;
 	Mesh* waterQuad;
+	bool SetUpWater();
 	void DrawWater();
 
 	GLuint bufferFBO;
@@ -82,6 +90,7 @@ protected:
 	Mesh* sphere;
 	Mesh* quad;
 	Light* pointLights;
+	bool SetUpPointLights();
 	void DrawPointLights();
 
 	Light* globalSceneLight;
@@ -89,6 +98,7 @@ protected:
 	GLuint skyBox_Space;
 	Shader* skybox_Planet_Shader;
 	Mesh* skyBox;
+	bool SetUpSkybox();
 	void DrawSkybox();
 
 	Mesh*	triangle;

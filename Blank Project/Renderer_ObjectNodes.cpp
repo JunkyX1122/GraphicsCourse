@@ -1,8 +1,18 @@
 #include "Renderer.h"
 
-bool Renderer::ManageSceneNodes()
+bool Renderer::ManagePlanetSurfaceSceneNodes()
 {
-	
+	rockModel1 = Mesh::LoadFromMeshFile("Rock_02_LOD0 .msh");
+	rockTexture1 = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	rockBump1 = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	SetTextureRepeating(rockTexture1, true);
+	SetTextureRepeating(rockBump1, true);
+
+	if (!rockModel1) return false;
+	if (!rockTexture1) return false;
+	if (!rockBump1) return false;
+
 	Vector3 heightMapSize = heightMap->GetHeightMapSize();
 	const int perRotation = 20;
 	const int rotationCycles = 9;
@@ -32,8 +42,6 @@ bool Renderer::ManageSceneNodes()
 			
 
 			SceneNode* s = new SceneNode();
-			s->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-
 
 			s->SetTransform(
 				Matrix4::Translation(Vector3(x * 16, y, z * 16)) *
@@ -55,6 +63,31 @@ bool Renderer::ManageSceneNodes()
 	}
 
 	return true;
+}
+
+bool Renderer::ManageSpaceSceneNodes()
+{
+	planetModel = Mesh::LoadFromMeshFile("Mars.msh");
+	planetTexture = SOIL_load_OGL_texture(TEXTUREDIR"Mars.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	//planetBump = SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	if (!planetModel) return false;
+	if (!planetTexture) return false;
+	/*
+	SceneNode* s = new SceneNode();
+	s->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
+
+	s->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
+
+	s->SetModelScale(Vector3(100.0f, 100.0f, 100.0f));
+	s->SetBoundingRadius(100.0f);
+	s->SetMesh(rockModel1);
+	s->SetTexture(rockTexture1);
+	s->SetBump(rockBump1);
+	planetSurfaceRoot->AddChild(s);
+	return true;
+	//if (!rockBump1) return false;*/
 }
 
 void Renderer::BuildNodeLists(SceneNode* from)

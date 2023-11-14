@@ -7,105 +7,23 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
-
-	rockModel1 = Mesh::LoadFromMeshFile("Rock_02_LOD0 .msh");
-	rockTexture1 =	SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.jpg",	SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	rockBump1 =		SOIL_load_OGL_texture(TEXTUREDIR"Barren RedsDOT3.jpg",			SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-
-	SetTextureRepeating(rockTexture1, true);
-	SetTextureRepeating(rockBump1, true);
-
-	if (!rockModel1) return;
-	if (!rockTexture1) return;
-	if (!rockBump1) return;
+	
+	
 
 
 	//========================================================================
-	heightMap = new HeightMap(TEXTUREDIR"terrain_3.png", 128.0f, 8);
-	if (!heightMap) return;
+	
+	if (!SetUpTerrain()) return;
+	
+	if (!SetUpWater()) return;
+
+	if (!SetUpSkybox()) return;
 	//========================================================================
-	waterTex = SOIL_load_OGL_texture(TEXTUREDIR"water.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	SetTextureRepeating(waterTex, true);
-	if (!waterTex) return;
 
-	reflectShader = new Shader("reflectVertex.glsl", "reflectFragment.glsl");
-	if (!reflectShader->LoadSuccess()) return;
-
-	waterRotate = 0.0f;
-	waterCycle = 0.0f;
-	//========================================================================
-	seaBedTexture = SOIL_load_OGL_texture(TEXTUREDIR"Wet_Soil_Shoeprints_albedo.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	seaBedBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Wet_Soil_Shoeprints_normal.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-
-	groundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Rock_03_DIFF.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	groundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Rock_03_NRM.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-
-	highGroundTexture = SOIL_load_OGL_texture(TEXTUREDIR"Dirty_Grass_DIFF.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	highGroundBumpMap = SOIL_load_OGL_texture(TEXTUREDIR"Dirty_Grass_NRM.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	SetTextureRepeating(seaBedTexture, true);
-	SetTextureRepeating(seaBedBumpMap, true);
-
-	SetTextureRepeating(groundTexture, true);
-	SetTextureRepeating(groundBumpMap, true);
-
-	SetTextureRepeating(highGroundTexture, true);
-	SetTextureRepeating(highGroundBumpMap, true);
-
-	if (!seaBedTexture) return;
-	if (!seaBedBumpMap) return;
-
-	if (!groundTexture) return;
-	if (!groundBumpMap) return;
-
-	if (!highGroundTexture) return;
-	if (!highGroundBumpMap) return;
-	//========================================================================
-	skyBox_Planet =
-		SOIL_load_OGL_cubemap(
-			TEXTUREDIR"rusted_west_new.JPG",
-			TEXTUREDIR"rusted_east_new.JPG",
-			TEXTUREDIR"rusted_up_new.JPG",
-			TEXTUREDIR"rusted_down_new.JPG",
-			TEXTUREDIR"rusted_south_new.JPG",
-			TEXTUREDIR"rusted_north_new.JPG",
-			SOIL_LOAD_RGB,
-			SOIL_CREATE_NEW_ID,
-			0);
-	if (!skyBox_Planet) return;
-
-	skyBox_Space =
-		SOIL_load_OGL_cubemap(
-			TEXTUREDIR"space_west.png",
-			TEXTUREDIR"space_east.png",
-			TEXTUREDIR"space_up.png",
-			TEXTUREDIR"space_down.png",
-			TEXTUREDIR"space_south.png",
-			TEXTUREDIR"space_north.png",
-			SOIL_LOAD_RGB,
-			SOIL_CREATE_NEW_ID,
-			0);
-	if (!skyBox_Space) return;
-
-	skybox_Planet_Shader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
-	if (!skybox_Planet_Shader->LoadSuccess()) return;
-	//========================================================================
-	Vector3 heightMapSize = heightMap->GetHeightMapSize();
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
-	pointLights = new Light[LIGHT_NUM];
-	for (int i = 0; i < LIGHT_NUM; i++)
-	{
-		Light& l = pointLights[i];
-		l.SetPosition(Vector3(rand() % (int)heightMapSize.x, heightMapSize.y * 0.5f, rand() % (int)heightMapSize.z));
-
-		l.SetColour(Vector4(
-			0.5f + (float)(rand() / (float)RAND_MAX),
-			0.5f + (float)(rand() / (float)RAND_MAX),
-			0.5f + (float)(rand() / (float)RAND_MAX),
-			1));
-		l.SetRadius(15000.0f);
-	}
+	if (!SetUpPointLights()) return;
 	//========================================================================
 	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
 	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
@@ -123,8 +41,9 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	planetSurfaceRoot = new SceneNode();
 	spaceRoot = new SceneNode();
 
-	if (!ManageSceneNodes()) return;
+	if (!ManagePlanetSurfaceSceneNodes()) return;
 	if (!CreateBuffers()) return;
+	if (!ManageSpaceSceneNodes()) return;
 	//========================================================================
 	
 	glEnable(GL_DEPTH_TEST);
