@@ -11,6 +11,16 @@ public:
 	SceneNode(Mesh* m = NULL, Vector4 colour = Vector4(1, 1, 1, 1));
 	~SceneNode(void);
 
+	SceneNode(Matrix4& matrix, Vector3 s, float f, Mesh* m, GLuint tex, GLuint b)
+	{
+		transform = matrix;
+		modelScale = s;
+		boundingRadius = f;
+		mesh = m;
+		texture = tex;
+		bump = b;
+	}
+
 	void SetTransform(const Matrix4 &matrix)		  { transform = matrix; }
 	const Matrix4& GetTransform()				const { return transform; }
 	Matrix4 GetWorldTransform()					const { return worldTransform; }
@@ -54,6 +64,8 @@ public:
 	{
 		return children.end();
 	}
+
+	
 	
 protected:
 	SceneNode* parent;

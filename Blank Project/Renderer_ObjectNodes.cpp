@@ -40,24 +40,22 @@ bool Renderer::ManagePlanetSurfaceSceneNodes()
 			float rotationX = (rand() % (lbR - ubR + 1)) + lbR;
 			float rotationY = (rand() % (lbR - ubR + 1)) + lbR;
 			
-
-			SceneNode* s = new SceneNode();
-
-			s->SetTransform(
-				Matrix4::Translation(Vector3(x * 16, y, z * 16)) *
-				Matrix4::Rotation(rotationY, Vector3(0, 1, 0)));
-
-			
 			for (int t = 0; t < 3; t++)
 			{
 				int lbS = lowerBounds[t], ubS = upperBounds[t];
 				scaleVectors[t] = (rand() % (lbS - ubS + 1)) + lbS;
 			}
-			s->SetModelScale(Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]));
-			s->SetBoundingRadius(scaleVectors[1] * 1.1f);
-			s->SetMesh(rockModel1);
-			s->SetTexture(rockTexture1);
-			s->SetBump(rockBump1);
+
+			SceneNode* s = new SceneNode
+			(
+				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
+				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
+				scaleVectors[1] * 1.1f,
+				rockModel1,
+				rockTexture1,
+				rockBump1
+			);
+
 			planetSurfaceRoot->AddChild(s);
 		}
 	}
