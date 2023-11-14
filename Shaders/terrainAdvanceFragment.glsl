@@ -52,16 +52,38 @@ void main(void)
 	vec3 bumpNormal = texture(bumpTex_low, IN.texCoord).rgb;
 	if(IN.worldPos.y > terrainHighBoundry)
 	{
-		normal = texture2D(bumpTex_high, IN.texCoord).rgb * 2.0 - 1.0;
-		diffuse = texture(diffuseTex_high, IN.texCoord);
-		bumpNormal = texture(bumpTex_high, IN.texCoord).rgb;
+		float blendArea = terrainHighBoundry * 1.25 - terrainHighBoundry;
+		float distanceToMax = clamp(terrainHighBoundry * 1.25 - IN.worldPos.y, 0, blendArea-1);
+
+		diffuse = texture(diffuseTex_mid, IN.texCoord) / blendArea * distanceToMax
+		+ texture(diffuseTex_high, IN.texCoord) / blendArea * (blendArea - distanceToMax);
+
+		normal = (texture2D(bumpTex_mid, IN.texCoord).rgb * 2.0 - 1.0) / blendArea * distanceToMax
+		+ (texture2D(bumpTex_high, IN.texCoord).rgb * 2.0 - 1.0) / blendArea * (blendArea - distanceToMax);
+
+		bumpNormal = texture(bumpTex_mid, IN.texCoord).rgb / blendArea * distanceToMax
+		+ texture(bumpTex_high, IN.texCoord).rgb / blendArea * (blendArea - distanceToMax);
 	}
 	else if(IN.worldPos.y > terrainLowBoundry)
 	{
-		normal = texture2D(bumpTex_mid, IN.texCoord).rgb * 2.0 - 1.0;
+		
 		diffuse = texture(diffuseTex_mid, IN.texCoord);
+		normal = texture2D(bumpTex_mid, IN.texCoord).rgb * 2.0 - 1.0;
 		bumpNormal = texture(bumpTex_mid, IN.texCoord).rgb;
+
+		float blendArea = terrainLowBoundry * 1.25 - terrainLowBoundry;
+		float distanceToMax = clamp(terrainLowBoundry * 1.25 - IN.worldPos.y, 0, blendArea-1);
+
+		diffuse = texture(diffuseTex_low, IN.texCoord) / blendArea * distanceToMax
+		+ texture(diffuseTex_mid, IN.texCoord) / blendArea * (blendArea - distanceToMax);
+
+		normal = (texture2D(bumpTex_low, IN.texCoord).rgb * 2.0 - 1.0) / blendArea * distanceToMax
+		+ (texture2D(bumpTex_mid, IN.texCoord).rgb * 2.0 - 1.0) / blendArea * (blendArea - distanceToMax);
+
+		bumpNormal = texture(bumpTex_low, IN.texCoord).rgb / blendArea * distanceToMax
+		+ texture(bumpTex_mid, IN.texCoord).rgb / blendArea * (blendArea - distanceToMax);
 	}
+
 	bumpNormal = normalize(TBN * normalize(bumpNormal * 2.0 - 1.0));
 
 	float lambert = max(dot(incident, bumpNormal), 0.0f);
@@ -72,9 +94,13 @@ void main(void)
 	specFactor = pow(specFactor, 60.0);
 
 	vec3 surface = (diffuse.rgb * lightColour.rgb);
-
+	float lightIntensity = 1.0;
+	if(IN.worldPos.y > terrainHighBoundry)
+	{
+		//lightIntensity = 0.25;
+	}
 	fragColour[0].rgb = surface * lambert * attenuation;
-	fragColour[0].rgb += (lightColour.rgb * specFactor) * attenuation * 0.33;
+	fragColour[0].rgb += (lightColour.rgb * specFactor * lightIntensity) * attenuation * 0.33;
 	fragColour[0].rgb += surface * 0.1f;
 	fragColour[0].a = diffuse.a;
 

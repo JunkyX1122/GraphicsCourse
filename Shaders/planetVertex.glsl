@@ -39,6 +39,6 @@ void main(void)
 
 	gl_Position = ( projMatrix * viewMatrix ) * worldPos;
 
-	OUT.colour = colour ;
+	OUT.colour = colour;
 	OUT.texCoord = vec4(position, 1.0);
 }

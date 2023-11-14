@@ -52,6 +52,7 @@ protected:
 	GLuint planetCloudTexture;
 	GLuint planetBump;
 	Shader* planetShader;
+	SceneNode* planet;
 	float planetCycle;
 
 	Shader* sceneShader;

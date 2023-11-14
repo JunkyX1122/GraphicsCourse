@@ -50,7 +50,7 @@ bool Renderer::ManagePlanetSurfaceSceneNodes()
 			(
 				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				scaleVectors[1] * 1.1f,
+				scaleVectors[1] * 1.3f,
 				rockModel1,
 				rockTexture1,
 				rockBump1
@@ -70,27 +70,25 @@ bool Renderer::ManageSpaceSceneNodes()
 	planetCloudTexture = SOIL_load_OGL_texture(TEXTUREDIR"Planet_Sky.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	planetBump = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
-	SetTextureRepeatingMirror(planetTexture, true);
-	SetTextureRepeatingMirror(planetCloudTexture, true);
-	SetTextureRepeatingMirror(planetBump, true);
+	SetTextureRepeating(planetTexture, true);
+	SetTextureRepeating(planetCloudTexture, true);
+	SetTextureRepeating(planetBump, true);
 
 
 	if (!planetModel) return false;
 	if (!planetTexture) return false;
 	if (!planetCloudTexture) return false;
 	if (!planetBump) return false;
-	SceneNode* s = new SceneNode
-	(
-		Matrix4::Translation(Vector3(100.0f, 1000.0f, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)),
-		Vector3(5000.0f, 5000.0f, 5000.0f),
-		1000.0f,
-		planetModel,
-		planetTexture,
-		planetBump
-	);
+	planet = new SceneNode();
+	planet->SetBoundingRadius(1000.0f);
+	planet->SetModelScale(Vector3(5000.0f, 5000.0f, 5000.0f));
+	planet->SetMesh(planetModel);
+	planet->SetTexture(planetTexture);
+	planet->SetBump(planetBump);
+	planet->SetTransform(Matrix4::Translation(Vector3(50000.0f, 1000.0f, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
 	planetCycle = 0.0f;
-	s->SetTag(SCENENODETAG_PLANET);
-	spaceRoot->AddChild(s);
+	planet->SetTag(SCENENODETAG_PLANET);
+	spaceRoot->AddChild(planet);
 	return true;
 }
 
@@ -161,7 +159,7 @@ void Renderer::DrawNodes(SceneNode* n)
 			basicTexture = n->GetTexture();
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, basicTexture);
-
+			
 			glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "bumpTex"), 1);
 			basicBump = n->GetBump();
 			glActiveTexture(GL_TEXTURE1);

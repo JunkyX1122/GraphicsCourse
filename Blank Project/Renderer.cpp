@@ -2,14 +2,14 @@
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	
 {
-	renderSceneType = 1;
+	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
 	
 	
-
+	if (!sphere) return;
 
 	//========================================================================
 	
@@ -42,6 +42,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	//========================================================================
 	planetSurfaceRoot = new SceneNode();
 	spaceRoot = new SceneNode();
+	spaceRoot->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
 
 	if (!ManagePlanetSurfaceSceneNodes()) return;
 	if (!CreateBuffers()) return;
@@ -100,9 +101,12 @@ void Renderer::UpdateScene(float dt)
 
 	waterRotate += dt * 2.0f;
 	waterCycle += dt * 0.25f;
-	planetCycle += dt;
+	planetCycle += dt * 1.0f;
 	planetSurfaceRoot->Update(dt);
+	spaceRoot->SetTransform(spaceRoot->GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
+	planet->SetTransform(planet->GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1)));
 	spaceRoot->Update(dt);
+	
 }
 
 void Renderer::RenderScene()	

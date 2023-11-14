@@ -1,4 +1,5 @@
 #version 330 core
+#define PI 3.141592653589793238462643383279
 uniform sampler2D diffuseTex;
 uniform sampler2D bumpTex; 
 uniform sampler2D diffuseTex2; 
@@ -28,12 +29,12 @@ void main(void)
 	vec3 halfDir = normalize(incident + viewDir);
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
+	
+	vec2 longitudeLatitude = vec2((atan(IN.texCoord.y, IN.texCoord.x) / PI + 1.0) * 0.5,
+                                  (asin(IN.texCoord.z) / PI + 0.5));
 
-	vec2 longitudeLatitude = vec2((atan(IN.texCoord.y, IN.texCoord.x) / 3.1415926 + 1.0) * 0.5,
-                                  (asin(IN.texCoord.z) / 3.1415926 + 0.5));
-
-	float timerAlt = timer * 0.1f * 0.25f * 0.25f;
-	vec2 texCoordsTransformed = longitudeLatitude + vec4(0, 0, timerAlt, timerAlt).zw;
+	float timerAlt = timer * 0.1f * 0.25f * 0.5f;
+	vec2 texCoordsTransformed = longitudeLatitude * vec4(1, 1, 0, 0).xy + vec4(0, 0, timerAlt, timerAlt).zw;
 
 	vec4 diffuse = texture(diffuseTex, longitudeLatitude);
 	vec4 diffuse2 = texture(diffuseTex2, texCoordsTransformed);
@@ -52,6 +53,8 @@ void main(void)
 	fragColour.rgb += (lightColour.rgb * specFactor) * attenuation * 0.33;
 	fragColour.rgb += surface * 0.1f;
 	fragColour.a = diffuse.a;
+
+	//tex2Dlod(TextureSampler, float4(u, v, 0, 0));
 }
 
 /*
