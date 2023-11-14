@@ -6,7 +6,8 @@ void Renderer::RenderThings()
 	switch (GetSceneType())
 	{
 	case(0):
-		
+		globalSceneLight->SetPosition(heightMapSize * Vector3(0.5f, 1.5f, 0.5f));
+		globalSceneLight->SetRadius(heightMapSize.x);
 		DrawTerrain();
 		BuildNodeLists(planetSurfaceRoot);
 		SortNodeLists();
@@ -14,6 +15,8 @@ void Renderer::RenderThings()
 		DrawWater();
 		break;
 	case(1):
+		globalSceneLight->SetPosition(Vector3(10000.0f, 0.0f, 0.0f));
+		globalSceneLight->SetRadius(30000.0f);
 		BuildNodeLists(spaceRoot);
 		SortNodeLists();
 		DrawNodes();

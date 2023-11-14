@@ -81,9 +81,9 @@ bool Renderer::ManageSpaceSceneNodes()
 	if (!planetBump) return false;
 	SceneNode* s = new SceneNode
 	(
-		Matrix4::Translation(Vector3(100.0f, 1000.0f, 0)),
-		Vector3(10000.0f, 10000.0f, 10000.0f),
-		10000.0f,
+		Matrix4::Translation(Vector3(100.0f, 1000.0f, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)),
+		Vector3(5000.0f, 5000.0f, 5000.0f),
+		1000.0f,
 		planetModel,
 		planetTexture,
 		planetBump

@@ -101,7 +101,6 @@ void Renderer::UpdateScene(float dt)
 	waterRotate += dt * 2.0f;
 	waterCycle += dt * 0.25f;
 	planetCycle += dt;
-	std::cout << planetCycle << "\n";
 	planetSurfaceRoot->Update(dt);
 	spaceRoot->Update(dt);
 }

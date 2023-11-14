@@ -32,10 +32,12 @@ void main(void)
 	vec2 longitudeLatitude = vec2((atan(IN.texCoord.y, IN.texCoord.x) / 3.1415926 + 1.0) * 0.5,
                                   (asin(IN.texCoord.z) / 3.1415926 + 0.5));
 
-	vec2 texCoordsTransformed = longitudeLatitude + vec4(0, 0, timer, timer).zw;
+	float timerAlt = timer * 0.1f * 0.25f * 0.25f;
+	vec2 texCoordsTransformed = longitudeLatitude + vec4(0, 0, timerAlt, timerAlt).zw;
 
-	vec4 diffuse = texture(diffuseTex, texCoordsTransformed);
-	vec3 bumpNormal = texture(bumpTex, texCoordsTransformed).rgb;
+	vec4 diffuse = texture(diffuseTex, longitudeLatitude);
+	vec4 diffuse2 = texture(diffuseTex2, texCoordsTransformed);
+	vec3 bumpNormal = texture(bumpTex, longitudeLatitude).rgb;
 	bumpNormal = normalize(TBN * normalize(bumpNormal * 2.0 - 1.0));
 
 	float lambert = max(dot(incident, bumpNormal), 0.0f);
@@ -45,10 +47,10 @@ void main(void)
 	float specFactor = clamp(dot(halfDir, bumpNormal), 0.0, 1.0);
 	specFactor = pow(specFactor, 60.0);
 
-	vec3 surface = (diffuse.rgb * lightColour.rgb);
+	vec3 surface = ((diffuse.rgb + diffuse2.rgb * 0.5) * lightColour.rgb);
 	fragColour.rgb = surface * lambert * attenuation;
 	fragColour.rgb += (lightColour.rgb * specFactor) * attenuation * 0.33;
-	fragColour.rgb += surface * 1.0f;
+	fragColour.rgb += surface * 0.1f;
 	fragColour.a = diffuse.a;
 }
 
