@@ -61,6 +61,7 @@ public:
 	
 protected:
 	void			SetTextureRepeating(GLuint target, bool state);
+	void			SetTextureRepeatingMirror(GLuint target, bool state);
 	virtual void	Resize(int x, int y);	
 	void			UpdateShaderMatrices();
 	void			BindShader(Shader*s);

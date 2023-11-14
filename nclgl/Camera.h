@@ -15,6 +15,7 @@ public:
 		this->pitch = pitch;
 		this->yaw = yaw;
 		this->position = position;
+		this->positionSetter = position;
 		roll = 0.0f;
 	}
 	~Camera(void) {};
@@ -40,4 +41,5 @@ protected:
 	float pitch;
 	float roll;
 	Vector3 position;
+	Vector3 positionSetter;
 };

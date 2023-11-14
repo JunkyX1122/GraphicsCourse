@@ -23,6 +23,8 @@ public:
 	 void FillBuffers();
 	 void RenderThings();
 	 void CombineBuffers();
+
+	 float manualMove = 0.0f;
 protected:
 	int renderSceneType;
 	Camera* camera;
@@ -47,7 +49,10 @@ protected:
 
 	Mesh* planetModel;
 	GLuint planetTexture;
+	GLuint planetCloudTexture;
 	GLuint planetBump;
+	Shader* planetShader;
+	float planetCycle;
 
 	Shader* sceneShader;
 	Shader* pointLightShader;
@@ -105,4 +110,6 @@ protected:
 	Shader* basicShader;
 	GLuint basicTexture;
 	GLuint basicBump;
+
+
 };

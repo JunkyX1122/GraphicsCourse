@@ -67,6 +67,7 @@ void Camera::UpdateCamera(float dt)
 	{
 		roll -= speed;
 	}
+	positionSetter = positionSetter * 0.9f + position * 0.1f;
 }
 
 Matrix4 Camera::BuildViewMatrix()
@@ -75,5 +76,5 @@ Matrix4 Camera::BuildViewMatrix()
 		Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
 		Matrix4::Rotation(-yaw, Vector3(0, 1, 0)) *
 		Matrix4::Rotation(-roll, Vector3(0, 0, 1)) *
-		Matrix4::Translation(-position);
+		Matrix4::Translation(-positionSetter);
 }

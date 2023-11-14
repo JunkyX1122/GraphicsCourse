@@ -34,7 +34,6 @@ bool Renderer::SetUpTerrain()
 	if (!highGroundBumpMap) return false;
 
 	heightMapSize = heightMap->GetHeightMapSize();
-
 	return true;
 }
 

@@ -2,7 +2,7 @@
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	
 {
-	renderSceneType = 0;
+	renderSceneType = 1;
 	quad = Mesh::GenerateQuad();
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
@@ -31,11 +31,13 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 
 	basicShader = new Shader("sceneVertex.glsl", "sceneFragment.glsl");
 	modelShader = new Shader("bumpVertex.glsl", "bumpFragment.glsl");
-
+	planetShader = new Shader("planetVertex.glsl", "planetFragment.glsl");
 	if (!sceneShader->LoadSuccess()) return;
 	if (!pointLightShader->LoadSuccess()) return;
 	if (!combineShader->LoadSuccess()) return;
+	if (!basicShader->LoadSuccess()) return;
 	if (!modelShader->LoadSuccess()) return;
+	if (!planetShader->LoadSuccess()) return;
 
 	//========================================================================
 	planetSurfaceRoot = new SceneNode();
@@ -84,6 +86,9 @@ Renderer::~Renderer(void)
 
 	//delete triangle;
 	delete basicShader;
+
+	delete modelShader;
+	delete planetShader;
 }
 
 void Renderer::UpdateScene(float dt) 
@@ -95,6 +100,8 @@ void Renderer::UpdateScene(float dt)
 
 	waterRotate += dt * 2.0f;
 	waterCycle += dt * 0.25f;
+	planetCycle += dt;
+	std::cout << planetCycle << "\n";
 	planetSurfaceRoot->Update(dt);
 	spaceRoot->Update(dt);
 }

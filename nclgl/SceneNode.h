@@ -23,7 +23,6 @@ public:
 		mesh = m;
 		texture = tex;
 		bump = b;
-		tag = SCENENODETAG_NULL;
 	}
 
 	void SetTransform(const Matrix4 &matrix)		  { transform = matrix; }
@@ -56,7 +55,7 @@ public:
 	GLuint GetBump() const { return bump; }
 	void SetBump(GLuint b) { bump = b; }
 
-	int GetTag() const { return tag; }
+	int GetTag() { return tag; }
 	void SetTag(int i) { tag = i; }
 
 	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b)
@@ -89,5 +88,5 @@ protected:
 	GLuint texture;
 	GLuint bump;
 
-	int tag;
+	int tag = SCENENODETAG_NULL;
 };

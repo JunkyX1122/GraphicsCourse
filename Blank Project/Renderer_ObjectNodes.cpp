@@ -65,12 +65,20 @@ bool Renderer::ManagePlanetSurfaceSceneNodes()
 
 bool Renderer::ManageSpaceSceneNodes()
 {
-	planetModel = Mesh::LoadFromMeshFile("Sphere.msh");
+	planetModel = Mesh::LoadFromMeshFile("Mars.msh");
 	planetTexture = SOIL_load_OGL_texture(TEXTUREDIR"Mars.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	planetCloudTexture = SOIL_load_OGL_texture(TEXTUREDIR"Planet_Sky.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	planetBump = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	SetTextureRepeatingMirror(planetTexture, true);
+	SetTextureRepeatingMirror(planetCloudTexture, true);
+	SetTextureRepeatingMirror(planetBump, true);
+
 
 	if (!planetModel) return false;
 	if (!planetTexture) return false;
+	if (!planetCloudTexture) return false;
+	if (!planetBump) return false;
 	SceneNode* s = new SceneNode
 	(
 		Matrix4::Translation(Vector3(100.0f, 1000.0f, 0)),
@@ -80,6 +88,7 @@ bool Renderer::ManageSpaceSceneNodes()
 		planetTexture,
 		planetBump
 	);
+	planetCycle = 0.0f;
 	s->SetTag(SCENENODETAG_PLANET);
 	spaceRoot->AddChild(s);
 	return true;
@@ -90,7 +99,6 @@ void Renderer::BuildNodeLists(SceneNode* from)
 	
 	if (frameFrustum.InsideFrustum(*from))
 	{
-		std::cout << "here";
 		Vector3 dir = from->GetWorldTransform().GetPositionVector() - camera->GetPosition();
 		from->SetCameraDistance(Vector3::Dot(dir, dir));
 
@@ -123,10 +131,6 @@ void Renderer::SortNodeLists()
 
 void Renderer::DrawNodes()
 {
-	BindShader(modelShader);
-	UpdateShaderMatrices();
-	glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "diffuseTex"), 0);
-	glEnable(GL_CULL_FACE);
 	for (const auto& i : nodeList)
 	{
 		DrawNodes(i);
@@ -135,33 +139,72 @@ void Renderer::DrawNodes()
 	{
 		DrawNodes(i);
 	}
-	glEnable(GL_CULL_FACE);
+	
 }
 
 void Renderer::DrawNodes(SceneNode* n)
 {
 	if (n->GetMesh())
 	{
-		Matrix4 model = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
+		glEnable(GL_CULL_FACE);
+		int tag = n->GetTag();
+		if (tag == -1)
+		{
+			BindShader(modelShader);
+			UpdateShaderMatrices();
 
-		
-		glUniformMatrix4fv(glGetUniformLocation(modelShader->GetProgram(), "modelMatrix"), 1, false, model.values);
+			Matrix4 model = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 
-		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "diffuseTex"), 0);
-		basicTexture = n->GetTexture();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, basicTexture);
-		
-		glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "bumpTex"), 1);
-		basicBump = n->GetBump();
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, basicBump);
-		
+			glUniformMatrix4fv(glGetUniformLocation(modelShader->GetProgram(), "modelMatrix"), 1, false, model.values);
 
-		glUniform3fv(glGetUniformLocation(modelShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
+			glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "diffuseTex"), 0);
+			basicTexture = n->GetTexture();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, basicTexture);
 
-		SetShaderLight(*globalSceneLight);
-		n->Draw(*this);
+			glUniform1i(glGetUniformLocation(modelShader->GetProgram(), "bumpTex"), 1);
+			basicBump = n->GetBump();
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, basicBump);
+
+
+			glUniform3fv(glGetUniformLocation(modelShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
+
+			SetShaderLight(*globalSceneLight);
+			n->Draw(*this);
+		}
+		else
+		{
+			
+			BindShader(planetShader);
+			UpdateShaderMatrices();
+			
+			Matrix4 model = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
+
+			glUniformMatrix4fv(glGetUniformLocation(planetShader->GetProgram(), "modelMatrix"), 1, false, model.values);
+
+			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "diffuseTex"), 0);
+			basicTexture = n->GetTexture();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, basicTexture);
+
+			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "bumpTex"), 1);
+			basicBump = n->GetBump();
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, basicBump);
+
+			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "diffuseTex2"), 2);
+			basicTexture = planetCloudTexture;
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, basicTexture);
+
+			glUniform3fv(glGetUniformLocation(planetShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
+			glUniform1f(glGetUniformLocation(planetShader->GetProgram(), "timer"), planetCycle);
+
+			SetShaderLight(*globalSceneLight);
+			n->Draw(*this);			
+		}
+		glDisable(GL_CULL_FACE);
 	}
 }
 

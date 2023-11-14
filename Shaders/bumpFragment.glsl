@@ -1,29 +1,6 @@
 #version 330 core
-
-/*
 uniform sampler2D diffuseTex;
-uniform sampler2D bumpTex;
-
-uniform vec3 cameraPos;
-uniform vec4 lightColour;
-uniform vec3 lightPos;
-uniform float lightRadius;
-
-in Vertex
-{
-	vec4 colour;
-	vec2 texCoord;
-	vec3 normal;
-	vec3 tangent;
-	vec3 binormal;
-	vec3 worldPos;
-} IN;
-
-out vec4 fragColour;
-*/
-
-uniform sampler2D diffuseTex;
-uniform sampler2D bumpTex; // New !
+uniform sampler2D bumpTex; 
 
 uniform vec3 cameraPos;
 uniform vec4 lightColour;
@@ -36,8 +13,8 @@ in Vertex
 	vec3 colour;
 	vec2 texCoord;
 	vec3 normal;
-	vec3 tangent; // New !
-	vec3 binormal; // New !
+	vec3 tangent; 
+	vec3 binormal; 
 	vec3 worldPos;
 } IN;
 
