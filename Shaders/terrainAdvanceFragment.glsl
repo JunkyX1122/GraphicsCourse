@@ -47,11 +47,16 @@ void main(void)
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 	vec3 normal = texture2D(bumpTex_low, IN.texCoord).rgb * 2.0 - 1.0;
-
 	vec4 diffuse = texture(diffuseTex_low, IN.texCoord);
 	vec3 bumpNormal = texture(bumpTex_low, IN.texCoord).rgb;
+
+
 	if(IN.worldPos.y > terrainHighBoundry)
 	{
+		diffuse = texture(diffuseTex_high, IN.texCoord);
+		normal = texture2D(bumpTex_high, IN.texCoord).rgb * 2.0 - 1.0;
+		bumpNormal = texture(bumpTex_high, IN.texCoord).rgb;
+
 		float blendArea = terrainHighBoundry * 1.25 - terrainHighBoundry;
 		float distanceToMax = clamp(terrainHighBoundry * 1.25 - IN.worldPos.y, 0, blendArea-1);
 

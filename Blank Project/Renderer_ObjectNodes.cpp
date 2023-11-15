@@ -111,7 +111,8 @@ void Renderer::DrawNodes(SceneNode* n)
 			glBindTexture(GL_TEXTURE_2D, basicBump);
 
 
-			glUniform3fv(glGetUniformLocation(modelShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
+			glUniform3fv(glGetUniformLocation(modelShader->GetProgram(), "cameraPos"),			1, (float*)&camera->GetPosition());
+			glUniform4fv(glGetUniformLocation(modelShader->GetProgram(), "colourCorrection"),	1, (float*)&n->GetColour());
 
 			SetShaderLight(*globalSceneLight);
 			n->Draw(*this);

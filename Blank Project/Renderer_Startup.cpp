@@ -89,17 +89,18 @@ bool Renderer::SetUpSkybox()
 bool Renderer::SetUpPointLights()
 {
 	pointLights = new Light[LIGHT_NUM];
+	float radius = 5000.0f;
 	for (int i = 0; i < pointLightPositions.size(); i++)
 	{
 		Light& l = pointLights[i];
-		l.SetPosition(pointLightPositions[i]);
+		l.SetPosition(pointLightPositions[i] + Vector3(0,500.0f,0) - Vector3(radius, radius, radius) / 4);
 
 		l.SetColour(Vector4(
 			0.5f + (float)(rand() / (float)RAND_MAX),
 			0.5f + (float)(rand() / (float)RAND_MAX),
 			0.5f + (float)(rand() / (float)RAND_MAX),
 			1));
-		l.SetRadius(5000.0f);
+		l.SetRadius(radius);
 	}
 	return true;
 }
@@ -159,7 +160,7 @@ bool Renderer::SetUpRocks()
 				rockTexture1,
 				rockBump1
 			);
-
+			s->SetColour(Vector4(1, 1, 1, 1));
 			planetSurfaceRoot->AddChild(s);
 		}
 	}
@@ -181,7 +182,7 @@ bool Renderer::SetUpCrystals()
 
 	Vector3 heightMapSize = heightMap->GetHeightMapSize();
 	const int perRotation = 20;
-	const int rotationCycles = 9;
+	const int rotationCycles = 5;
 	const int totalRocks = perRotation * rotationCycles;
 
 	int lbR = 0, ubR = 360;
@@ -194,7 +195,7 @@ bool Renderer::SetUpCrystals()
 	for (int i = 0; i < totalRocks; i++)
 	{
 		float heightMapCentre = (heightMapSize.x / 16) / 2;
-		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
+		float heightMapRadius = ((heightMapSize.x / 16) / 2) * 0.25f + ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
 		float angle = (2 * PI) / 20 * i * 0.85f + (0.32f * PI);
 		int x = round(heightMapCentre + heightMapRadius * cos(angle));
 		int z = round(heightMapCentre + heightMapRadius * sin(angle));
@@ -221,6 +222,8 @@ bool Renderer::SetUpCrystals()
 				crystalTexture1,
 				crystalBump1
 			);
+			
+			s->SetColour(Vector4(1, 1, 1, 0.75f));
 			pointLightPositions.push_back(Vector3(x * 16, y, z * 16));
 			planetSurfaceRoot->AddChild(s);
 		}

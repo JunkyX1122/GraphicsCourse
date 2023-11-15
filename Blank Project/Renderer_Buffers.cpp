@@ -103,6 +103,8 @@ void Renderer::DrawPointLights()
 		for (int i = 0; i < pointLightPositions.size(); i++)
 		{
 			Light& l = pointLights[i];
+			//float rad = 5000.0f*(float)(rand() / (float)RAND_MAX);
+			//l.SetRadius(rad);
 			SetShaderLight(l);
 			sphere->Draw();
 		}

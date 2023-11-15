@@ -51,7 +51,7 @@ void Renderer::DrawNode(SceneNode* n)
 {
 	if (n->GetMesh())
 	{
-		Matrix4 model = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
+		Matrix4 model = Matrix4::Scale(n->GetModelScale()) * n->GetWorldTransform();
 		glUniformMatrix4fv(glGetUniformLocation(shader->GetProgram(), "modelMatrix"), 1, false, model.values);
 
 		glUniform4fv(glGetUniformLocation(shader->GetProgram(), "nodeColour"), 1, (float*)&n->GetColour());
