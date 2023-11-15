@@ -7,7 +7,6 @@ void Renderer::RenderThings()
 	{
 	case(0):
 		globalSceneLight->SetPosition(heightMapSize * Vector3(0.5f, 3.0f, 0.5f) + Vector3(-5000.0f,0,0));
-		globalSceneLight->SetRadius(heightMapSize.x);
 		globalSceneLight->SetRadius(80000.0f);
 		DrawTerrain();
 		BuildNodeLists(planetSurfaceRoot);

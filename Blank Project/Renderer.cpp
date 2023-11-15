@@ -21,7 +21,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	//========================================================================
 
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
-	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
+	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.0f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	//========================================================================
 	
 	planetSurfaceRoot = new SceneNode();
@@ -77,7 +77,7 @@ Renderer::~Renderer(void)
 	delete combineShader;
 	delete pointLightShader;
 
-	glDeleteTextures(1, &bufferColourTex);
+	glDeleteTextures(3, bufferColourTex);
 	glDeleteTextures(1, &bufferNormalTex);
 	glDeleteTextures(1, &bufferDepthTex);
 	glDeleteTextures(1, &lightDiffuseTex);
@@ -127,7 +127,6 @@ void Renderer::RenderScene()
 	
 
 	FillBuffers();
-
 	DrawPointLights();
 	CombineBuffers();
 	

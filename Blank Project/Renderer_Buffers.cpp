@@ -3,6 +3,15 @@
 
 bool Renderer::CreateBuffers()
 {
+	processShaderGetBright = new Shader("texturedVertex.glsl", "processGetBrightFragment.glsl");
+	processShaderBlur = new Shader("texturedVertex.glsl", "processFragment.glsl");
+	processShaderBloom = new Shader("texturedVertex.glsl", "processBloomFragment.glsl");
+
+	if (!processShaderGetBright->LoadSuccess()) return false;
+	if (!processShaderBlur->LoadSuccess()) return false;
+	if (!processShaderBloom->LoadSuccess()) return false;
+
+
 	glGenFramebuffers(1, &bufferFBO);
 	glGenFramebuffers(1, &pointLightFBO);
 
@@ -13,13 +22,17 @@ bool Renderer::CreateBuffers()
 	};
 
 	GenerateScreenTexture(bufferDepthTex, true);
-	GenerateScreenTexture(bufferColourTex);
+
+	GenerateScreenTexture(bufferColourTex[0]);
+	GenerateScreenTexture(bufferColourTex[1]);
+	GenerateScreenTexture(bufferColourTex[2]);
+
 	GenerateScreenTexture(bufferNormalTex);
 	GenerateScreenTexture(lightDiffuseTex);
 	GenerateScreenTexture(lightSpecularTex);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, bufferFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[0], 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, bufferNormalTex, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, bufferDepthTex, 0);
 
@@ -131,7 +144,7 @@ void Renderer::CombineBuffers()
 
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, bufferColourTex);
+	glBindTexture(GL_TEXTURE_2D, bufferColourTex[0]);
 
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "diffuseLight"), 1);
 	glActiveTexture(GL_TEXTURE1);
