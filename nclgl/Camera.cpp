@@ -35,28 +35,28 @@ void Camera::UpdateCamera(float dt)
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_W))
 	{
-		position += forward * speed;
+		positionSetter += forward * speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_S))
 	{
-		position -= forward * speed;
+		positionSetter -= forward * speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A))
 	{
-		position -= right * speed;
+		positionSetter -= right * speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D))
 	{
-		position += right * speed;
+		positionSetter += right * speed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT))
 	{
-		position.y -= speed;
+		positionSetter.y -= speed;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE))
 	{
-		position.y += speed;
+		positionSetter.y += speed;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q))
@@ -67,7 +67,7 @@ void Camera::UpdateCamera(float dt)
 	{
 		roll -= speed;
 	}
-	positionSetter = positionSetter * 0.95f + position * 0.05f;
+	position = position * 0.95f + positionSetter * 0.05f;
 }
 
 Matrix4 Camera::BuildViewMatrix()
@@ -76,5 +76,5 @@ Matrix4 Camera::BuildViewMatrix()
 		Matrix4::Rotation(-pitch, Vector3(1, 0, 0)) *
 		Matrix4::Rotation(-yaw, Vector3(0, 1, 0)) *
 		Matrix4::Rotation(-roll, Vector3(0, 0, 1)) *
-		Matrix4::Translation(-positionSetter);
+		Matrix4::Translation(-position);
 }

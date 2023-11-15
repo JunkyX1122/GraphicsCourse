@@ -93,11 +93,13 @@ bool Renderer::SetUpPointLights()
 	for (int i = 0; i < pointLightPositions.size(); i++)
 	{
 		Light& l = pointLights[i];
-		l.SetPosition(pointLightPositions[i] + Vector3(0,500.0f,0) - Vector3(radius, radius, radius) / 4);
+		l.SetPosition(pointLightPositions[i]);
 		
 		l.SetColour(pointLightColours[i]);
 		l.SetRadius(radius);
+		pointLightStarts.push_back(2 * PI * (float)(rand() / (float)RAND_MAX));
 	}
+	pointLightCycle = 0.0f;
 	return true;
 }
 
@@ -213,7 +215,7 @@ bool Renderer::SetUpCrystals()
 			(
 				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				scaleVectors[1] * 1.3f,
+				scaleVectors[1] * 1.6f,
 				crystalModel1,
 				crystalTexture1,
 				crystalBump1
@@ -221,7 +223,7 @@ bool Renderer::SetUpCrystals()
 			Vector4 colour = Vector4(
 				0.5f + (float)(rand() / (float)RAND_MAX),
 				0.5f + (float)(rand() / (float)RAND_MAX),
-				0.5f + (float)(rand() / (float)RAND_MAX),
+				0.5f + (float)(rand() / (float)RAND_MAX) * 0.25f,
 				0.5f);
 
 			s->SetColour(Vector4(colour.x * 3.0f, colour.y * 3.0f, colour.z * 3.0f, colour.w));
@@ -230,5 +232,6 @@ bool Renderer::SetUpCrystals()
 			planetSurfaceRoot->AddChild(s);
 		}
 	}
+
 	return true;
 }

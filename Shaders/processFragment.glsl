@@ -13,6 +13,13 @@ out vec4 fragColor;
 
 const float scaleFactors[7] = float[](0.006 , 0.061 , 0.242 , 0.383 , 0.242 , 0.061 , 0.006);
 
+float pdf(float x, float  mu=0.0f, float  sigma=1.0f)
+{
+    x = (x - mu) / sigma;
+    return (exp(-x*x/2.0f) / sqrt(2.0f*3.14159f) / sigma);
+}
+
+
 void main(void)
 {
 	fragColor = vec4(0, 0, 0, 1);
@@ -26,11 +33,17 @@ void main(void)
 	{
 		delta = dFdx(IN.texCoord);
 	}
-
-	for(int i = 0; i < 7; i++)
+	int z = 0;
+    float border = 4;
+    float ranger = 7;
+	for(int i = 0; i < ranger; i++)
 	{
 		vec2 offset = delta * (i - 3);
 		vec4 tmp = texture2D(sceneTex, IN.texCoord.xy + offset);
-		fragColor += tmp * scaleFactors[i];
+		
+		
+		fragColor += tmp * scaleFactors[i] ;
+		z+=1;
 	}
 }
+

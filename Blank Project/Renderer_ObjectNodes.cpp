@@ -15,9 +15,9 @@ bool Renderer::ManageSpaceSceneNodes()
 	planetCloudTexture = SOIL_load_OGL_texture(TEXTUREDIR"Planet_Sky.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	planetBump = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
-	SetTextureRepeating(planetTexture, true);
+	SetTextureRepeating(planetTexture, false);
 	SetTextureRepeating(planetCloudTexture, true);
-	SetTextureRepeating(planetBump, true);
+	SetTextureRepeating(planetBump, false);
 
 
 	if (!planetModel) return false;

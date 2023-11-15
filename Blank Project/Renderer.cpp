@@ -108,6 +108,10 @@ void Renderer::UpdateScene(float dt)
 	waterRotate += dt * 2.0f;
 	waterCycle += dt * 0.25f;
 	planetCycle += dt * 1.0f;
+	
+	UpdatePointLights(dt);
+
+
 	planetSurfaceRoot->Update(dt);
 	spaceRoot->SetTransform(spaceRoot->GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
 	planet->SetTransform(planet->GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1)));

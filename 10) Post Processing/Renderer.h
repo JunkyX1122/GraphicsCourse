@@ -20,6 +20,8 @@ protected:
 	Shader* sceneShader;
 	Shader* getBrightShader;
 	Shader* processShader;
+	Shader* processShader2;
+	Shader* processShader3;
 	Shader* combineShader;
 
 	Camera* camera;

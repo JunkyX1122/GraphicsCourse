@@ -30,8 +30,9 @@ void main(void)
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 	
-	vec2 longitudeLatitude = vec2((atan(IN.texCoord.y, IN.texCoord.x) / PI + 1.0) * 0.5,
-                                  (asin(IN.texCoord.z) / PI + 0.5));
+	float xVal = clamp((atan(IN.texCoord.y, IN.texCoord.x) / PI + 1.0) * 0.5, 0.0, 1.0);
+	float yVal = (asin(IN.texCoord.z) / PI + 0.5);
+	vec2 longitudeLatitude = vec2(xVal, yVal);
 
 	float timerAlt = timer * 0.1f * 0.25f * 0.5f;
 	vec2 texCoordsTransformed = longitudeLatitude * vec4(1, 1, 0, 0).xy + vec4(0, 0, timerAlt, timerAlt).zw;
@@ -48,7 +49,7 @@ void main(void)
 	float specFactor = clamp(dot(halfDir, bumpNormal), 0.0, 1.0);
 	specFactor = pow(specFactor, 60.0);
 
-	vec3 surface = ((diffuse.rgb + diffuse2.rgb * 0.5) * lightColour.rgb);
+	vec3 surface = ((diffuse.rgb + diffuse2.rgb * 0.0) * lightColour.rgb);
 	fragColour.rgb = surface * lambert * attenuation;
 	fragColour.rgb += (lightColour.rgb * specFactor) * attenuation * 0.33;
 	fragColour.rgb += surface * 0.1f;

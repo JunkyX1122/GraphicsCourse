@@ -98,14 +98,17 @@ protected:
 
 	std::vector<Vector3> pointLightPositions;
 	std::vector<Vector4> pointLightColours;
+	std::vector<float> pointLightStarts;
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
 	Mesh* sphere;
 	Mesh* quad;
 	Light* pointLights;
+	float pointLightCycle;
 	bool SetUpPointLights();
 	void DrawPointLights();
+	void UpdatePointLights(float dt);
 
 	Light* globalSceneLight;
 	GLuint skyBox_Planet;
@@ -114,6 +117,11 @@ protected:
 	Mesh* skyBox;
 	bool SetUpSkybox();
 	void DrawSkybox();
+
+	Shader* processShaderGetBright;
+	Shader* processShaderBlur;
+	Shader* processShaderBloom;
+
 
 	Mesh*	triangle;
 	Shader* basicShader;
