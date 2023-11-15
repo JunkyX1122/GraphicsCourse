@@ -95,6 +95,8 @@ protected:
 	GLuint bufferColourTex[3];
 	GLuint bufferNormalTex;
 	GLuint bufferDepthTex;
+	void ManagePostProcess();
+	void DrawPostProcess();
 
 	std::vector<Vector3> pointLightPositions;
 	std::vector<Vector4> pointLightColours;
@@ -118,6 +120,7 @@ protected:
 	bool SetUpSkybox();
 	void DrawSkybox();
 
+	GLuint processFBO;
 	Shader* processShaderGetBright;
 	Shader* processShaderBlur;
 	Shader* processShaderBloom;

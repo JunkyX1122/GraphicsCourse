@@ -114,4 +114,5 @@ void Renderer::DrawWater()
 	waterQuad->Draw();
 
 	glEnable(GL_CULL_FACE);
+	textureMatrix.ToIdentity();
 }

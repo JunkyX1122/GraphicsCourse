@@ -129,7 +129,8 @@ void Renderer::RenderScene()
 	FillBuffers();
 	DrawPointLights();
 	CombineBuffers();
-	
+	ManagePostProcess();
+	DrawPostProcess();
 }
 
 
