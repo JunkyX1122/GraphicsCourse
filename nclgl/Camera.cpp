@@ -67,7 +67,7 @@ void Camera::UpdateCamera(float dt)
 	{
 		roll -= speed;
 	}
-	positionSetter = positionSetter * 0.9f + position * 0.1f;
+	positionSetter = positionSetter * 0.95f + position * 0.05f;
 }
 
 Matrix4 Camera::BuildViewMatrix()

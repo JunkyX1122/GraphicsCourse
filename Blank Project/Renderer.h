@@ -97,6 +97,7 @@ protected:
 	GLuint bufferDepthTex;
 
 	std::vector<Vector3> pointLightPositions;
+	std::vector<Vector4> pointLightColours;
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
 	GLuint lightSpecularTex;
