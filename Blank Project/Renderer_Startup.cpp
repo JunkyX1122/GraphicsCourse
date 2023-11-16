@@ -133,25 +133,26 @@ bool Renderer::SetUpRocks()
 		float heightMapCentre = (heightMapSize.x / 16) / 2;
 		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
 		float angle = (2 * PI) / 20 * i * 0.85f;
-		int x = round(heightMapCentre + heightMapRadius * cos(angle));
-		int z = round(heightMapCentre + heightMapRadius * sin(angle));
+		int x = (int)round(heightMapCentre + heightMapRadius * cos(angle));
+		int z = (int)round(heightMapCentre + heightMapRadius * sin(angle));
 
 		float y = heightMap->GetHeightAtCoord(x, z);
 
 		if (y != NULL && y < heightMapSize.y / 8 * 2)
 		{
-			float rotationX = (rand() % (lbR - ubR + 1)) + lbR;
-			float rotationY = (rand() % (lbR - ubR + 1)) + lbR;
+			float rotationX = (float)((rand() % (lbR - ubR + 1)) + lbR);
+			float rotationY = (float)((rand() % (lbR - ubR + 1)) + lbR);
 
 			for (int t = 0; t < 3; t++)
 			{
-				int lbS = lowerBounds[t], ubS = upperBounds[t];
-				scaleVectors[t] = (rand() % (lbS - ubS + 1)) + lbS;
+				float lbS = lowerBounds[t];
+				float ubS = upperBounds[t];
+				scaleVectors[t] = lbS + (ubS - lbS) * (((float)rand()) / (float)RAND_MAX);
 			}
 
 			SceneNode* s = new SceneNode
 			(
-				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
+				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
 				scaleVectors[1] * 1.3f,
 				rockModel1,
@@ -193,41 +194,45 @@ bool Renderer::SetUpCrystals()
 	for (int i = 0; i < totalRocks; i++)
 	{
 		float heightMapCentre = (heightMapSize.x / 16) / 2;
-		float heightMapRadius = ((heightMapSize.x / 16) / 2) * 0.25f + ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 2;
+		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (0.25f) + ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 1.5f;
 		float angle = (2 * PI) / 20 * i * 0.85f + (0.32f * PI);
-		int x = round(heightMapCentre + heightMapRadius * cos(angle));
-		int z = round(heightMapCentre + heightMapRadius * sin(angle));
+		int x = (int)round(heightMapCentre + heightMapRadius * cos(angle));
+		int z = (int)round(heightMapCentre + heightMapRadius * sin(angle));
 
 		float y = heightMap->GetHeightAtCoord(x, z);
 
 		if (y != NULL && y > heightMapSize.y / 8 * 2 && y < heightMapSize.y / 8 * 4)
 		{
-			float rotationX = (rand() % (lbR - ubR + 1)) + lbR;
-			float rotationY = (rand() % (lbR - ubR + 1)) + lbR;
+			float rotationX = (float)((rand() % (lbR - ubR + 1)) + lbR);
+			float rotationY = (float)((rand() % (lbR - ubR + 1)) + lbR);
 
 			for (int t = 0; t < 3; t++)
 			{
-				int lbS = lowerBounds[t], ubS = upperBounds[t];
-				scaleVectors[t] = (rand() % (lbS - ubS + 1)) + lbS;
+				float lbS = lowerBounds[t];
+				float ubS = upperBounds[t];
+				scaleVectors[t] = lbS + (ubS - lbS) * (((float)rand()) / (float)RAND_MAX);
 			}
 
 			SceneNode* s = new SceneNode
 			(
-				Matrix4::Translation(Vector3(x * 16, y, z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
+				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				scaleVectors[1] * 1.6f,
+				500.0f,
 				crystalModel1,
 				crystalTexture1,
 				crystalBump1
 			);
+
 			Vector4 colour = Vector4(
 				0.5f + (float)(rand() / (float)RAND_MAX),
 				0.5f + (float)(rand() / (float)RAND_MAX),
 				0.5f + (float)(rand() / (float)RAND_MAX) * 0.25f,
-				0.5f);
+				0.90f);
+
+			//colour = Vector4(1, 1, 1, 1);
 
 			s->SetColour(Vector4(colour.x * 3.0f, colour.y * 3.0f, colour.z * 3.0f, colour.w));
-			pointLightPositions.push_back(Vector3(x * 16, y, z * 16));
+			pointLightPositions.push_back(Vector3((float)x * 16, (float)y, (float)z * 16));
 			pointLightColours.push_back(Vector4(colour.x, colour.y, colour.z,1.0f));
 			planetSurfaceRoot->AddChild(s);
 		}

@@ -92,7 +92,7 @@ protected:
 	void DrawWater();
 
 	GLuint bufferFBO;
-	GLuint bufferColourTex[3];
+	GLuint bufferColourTex[4];
 	GLuint bufferNormalTex;
 	GLuint bufferDepthTex;
 	void ManagePostProcess();

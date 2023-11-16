@@ -26,6 +26,7 @@ bool Renderer::CreateBuffers()
 	GenerateScreenTexture(bufferColourTex[0]);
 	GenerateScreenTexture(bufferColourTex[1]);
 	GenerateScreenTexture(bufferColourTex[2]);
+	GenerateScreenTexture(bufferColourTex[3]);
 
 	GenerateScreenTexture(bufferNormalTex);
 	GenerateScreenTexture(lightDiffuseTex);
@@ -112,8 +113,6 @@ void Renderer::DrawPointLights()
 		for (int i = 0; i < pointLightPositions.size(); i++)
 		{
 			Light& l = pointLights[i];
-			//float rad = 5000.0f*(float)(rand() / (float)RAND_MAX);
-			//l.SetRadius(rad);
 			SetShaderLight(l);
 			sphere->Draw();
 		}
@@ -132,6 +131,10 @@ void Renderer::DrawPointLights()
 
 void Renderer::CombineBuffers()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, processFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[1], 0);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 	BindShader(combineShader);
 	modelMatrix.ToIdentity();
 	viewMatrix.ToIdentity();
@@ -155,7 +158,7 @@ void Renderer::CombineBuffers()
 void Renderer::ManagePostProcess()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, processFBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[1], 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[2], 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	BindShader(processShaderGetBright);
@@ -171,8 +174,8 @@ void Renderer::ManagePostProcess()
 
 	for (int i = 0; i < 1; i++)
 	{
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[1], 0);
-		glBindTexture(GL_TEXTURE_2D, bufferColourTex[0]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[2], 0);
+		glBindTexture(GL_TEXTURE_2D, bufferColourTex[1]);
 		quad->Draw();
 	}
 
@@ -193,10 +196,10 @@ void Renderer::ManagePostProcess()
 
 	for (int i = 0; i < POST_PASSES * 2; i++)
 	{
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[1 + ((i + 1) % 2)], 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[2 + ((i + 1) % 2)], 0);
 		glUniform1i(glGetUniformLocation(processShaderBlur->GetProgram(), "isVertical"), i % 2);
 
-		glBindTexture(GL_TEXTURE_2D, bufferColourTex[1 + (i % 2)]);
+		glBindTexture(GL_TEXTURE_2D, bufferColourTex[2 + (i % 2)]);
 		quad->Draw();
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -213,11 +216,11 @@ void Renderer::DrawPostProcess()
 	projMatrix.ToIdentity();
 	UpdateShaderMatrices();
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, bufferColourTex[0]);
+	glBindTexture(GL_TEXTURE_2D, bufferColourTex[1]);
 	glUniform1i(glGetUniformLocation(processShaderBloom->GetProgram(), "sceneTexBase"), 0);
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, bufferColourTex[1]);
+	glBindTexture(GL_TEXTURE_2D, bufferColourTex[2]);
 	glUniform1i(glGetUniformLocation(processShaderBloom->GetProgram(), "sceneTex"), 1);
 	quad->Draw();
 }
