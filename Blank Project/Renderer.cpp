@@ -142,41 +142,7 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_PLUS))
-	{
-		cameraAnimateSpeed += 0.001f;
-	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_MINUS))
-	{
-		cameraAnimateSpeed -= 0.001f;
-	}
-
-	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RIGHT))
-	{
-		cameraAnimateSpeed = 1.0f/8.0f;
-	}
-	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_LEFT))
-	{
-		cameraAnimateSpeed = -1.0f/8.0f;
-	}
-	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_M))
-	{
-		if (camera->GetFreeMove()) 
-		{
-			camera->LockFreeMovement();
-		}
-		else
-		{
-			camera->UnlockFreeMovement();
-		}
-	}
-	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_N))
-	{
-		std::cout << "Current Cam Keyframe: " << currentKeyFrame << "\n";
-		camera->SetPositionSetter(cameraPositions_Planet[currentKeyFrame]);
-		camera->SetRotationSetter(cameraRotations_Planet[currentKeyFrame]);
-		currentKeyFrame = (currentKeyFrame + 1) % cameraKeyFrameCount_Planet;
-	}
+	UpdateCameraControls();
 	if(!camera->GetFreeMove()) UpdateCameraMovement(dt);
 	camera->UpdateCamera(dt);
 
@@ -190,12 +156,7 @@ void Renderer::UpdateScene(float dt)
 	planetCycle += dt * 1.0f;
 	
 	UpdatePointLights(dt);
-
-
-	planetSurfaceRoot->Update(dt);
-	spaceRoot->SetTransform(spaceRoot->GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
-	planet->SetTransform(planet->GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1)));
-	spaceRoot->Update(dt);
+	UpdateNodes(dt);
 	
 }
 

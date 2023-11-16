@@ -2,7 +2,8 @@
 #include "Renderer.h"
 
 int main()	{
-	Window w("Make your own project!", 1280, 720, false);
+	//Window w("Make your own project!", 1280, 720, false);
+	Window w("Make your own project!", 1920, 1080, true);
 
 	if(!w.HasInitialised()) {
 		return -1;
@@ -21,6 +22,9 @@ int main()	{
 		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_0))
 		{
 			renderer.SetSceneType(renderer.GetSceneType() == 0 ? 1 : 0);
+			if (renderer.GetSceneType() == 0) renderer.GetCamera()->LockFreeMovement();
+			if (renderer.GetSceneType() == 1) renderer.GetCamera()->UnlockFreeMovement();
+
 		}
 		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());
 		renderer.RenderScene();

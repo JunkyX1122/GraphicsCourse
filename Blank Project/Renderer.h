@@ -24,6 +24,8 @@ public:
 	 void RenderThings();
 	 void CombineBuffers();
 
+	 Camera* GetCamera() { return camera; }
+
 	 float manualMove = 0.0f;
 protected:
 	int renderSceneType;
@@ -38,6 +40,7 @@ protected:
 	float cameraAnimateSpeed;
 	void SetUpCameraKeyFrames();
 	void AddCameraKeyFrame(Vector3 pos, Vector3 rot);
+	void UpdateCameraControls();
 	void UpdateCameraMovement(float dt);
 	float naive_lerp(float a, float b, float t);
 
@@ -53,6 +56,7 @@ protected:
 	void ClearNodeLists();
 	void DrawNodes();
 	void DrawNodes(SceneNode* n);
+	void UpdateNodes(float dt);
 
 	Shader* modelShader;
 	Mesh* rockModel1;
