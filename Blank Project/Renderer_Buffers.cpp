@@ -3,6 +3,14 @@
 
 bool Renderer::CreateBuffers()
 {
+	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
+	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
+	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
+
+	if (!sceneShader->LoadSuccess()) return false;
+	if (!pointLightShader->LoadSuccess()) return false;
+	if (!combineShader->LoadSuccess()) return false;
+
 	processShaderGetBright = new Shader("texturedVertex.glsl", "processGetBrightFragment.glsl");
 	processShaderBlur = new Shader("texturedVertex.glsl", "processFragment.glsl");
 	processShaderBloom = new Shader("texturedVertex.glsl", "processBloomFragment.glsl");

@@ -30,7 +30,7 @@ void main(void)
 
 	mat3 TBN = mat3(normalize(IN.tangent), normalize(IN.binormal), normalize(IN.normal));
 	
-	float xVal = clamp((atan(IN.texCoord.y, IN.texCoord.x) / PI + 1.0) * 0.5, 0.0, 1.0);
+	float xVal = (atan(IN.texCoord.y, IN.texCoord.x) / PI + 1.0) * 0.5;
 	float yVal = (asin(IN.texCoord.z) / PI + 0.5);
 	vec2 longitudeLatitude = vec2(xVal, yVal);
 

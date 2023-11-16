@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "Window.h"
 #include <algorithm>
-
+using namespace std;
 void Camera::UpdateCamera(float dt)
 {
 	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
@@ -61,13 +61,25 @@ void Camera::UpdateCamera(float dt)
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q))
 	{
-		roll += speed;
+		roll += 0.5f;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_E))
 	{
-		roll -= speed;
+		roll -= 0.5f;
 	}
 	position = position * 0.95f + positionSetter * 0.05f;
+
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_P))
+	{
+		cout <<
+			"X:		" << position.x << endl <<
+			"Y:		" << position.y << endl <<
+			"Z:		" << position.z << endl <<
+			"PITCH:	" << pitch << endl <<
+			"YAW:	" << yaw << endl <<
+			"ROLL:	" << roll << endl
+			;
+	}
 }
 
 Matrix4 Camera::BuildViewMatrix()

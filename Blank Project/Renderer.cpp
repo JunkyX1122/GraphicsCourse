@@ -2,7 +2,7 @@
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	
 {
-	renderSceneType = 0;
+	renderSceneType = 1;
 	quad = Mesh::GenerateQuad();
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
@@ -36,17 +36,10 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	if (!SetUpPointLights()) return;
 	//========================================================================
 
-
-	sceneShader = new Shader("terrainAdvanceVertex.glsl", "terrainAdvanceFragment.glsl");
-	pointLightShader = new Shader("pointLightVertex.glsl", "pointLightFragment.glsl");
-	combineShader = new Shader("combineVertex.glsl", "combineFragment.glsl");
-
 	basicShader = new Shader("sceneVertex.glsl", "sceneFragment.glsl");
 	modelShader = new Shader("bumpVertex.glsl", "bumpFragment.glsl");
 	planetShader = new Shader("planetVertex.glsl", "planetFragment.glsl");
-	if (!sceneShader->LoadSuccess()) return;
-	if (!pointLightShader->LoadSuccess()) return;
-	if (!combineShader->LoadSuccess()) return;
+	
 	if (!basicShader->LoadSuccess()) return;
 	if (!modelShader->LoadSuccess()) return;
 	if (!planetShader->LoadSuccess()) return;
