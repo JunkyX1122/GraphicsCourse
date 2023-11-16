@@ -2,7 +2,7 @@
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	
 {
-	renderSceneType = 1;
+	renderSceneType = 0;
 	quad = Mesh::GenerateQuad();
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
@@ -19,9 +19,12 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 
 	if (!SetUpSkybox()) return;
 	//========================================================================
-
+	cameraTimer = 0.0f;
+	cameraAutoMoveType = 0;
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
+	camera->LockFreeMovement();
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.0f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
+	SetUpCameraKeyFrames();
 	//========================================================================
 	
 	planetSurfaceRoot = new SceneNode();
@@ -139,7 +142,28 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_M))
+	{
+		if (camera->GetFreeMove()) 
+		{
+			camera->LockFreeMovement();
+		}
+		else
+		{
+			camera->UnlockFreeMovement();
+		}
+	}
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_N))
+	{
+		std::cout << "Current Cam Keyframe: " << currentKeyFrame << "\n";
+		camera->SetPositionSetter(cameraPositions_Planet[currentKeyFrame]);
+		camera->SetRotationSetter(cameraRotations_Planet[currentKeyFrame]);
+		currentKeyFrame = (currentKeyFrame + 1) % cameraKeyFrameCount_Planet;
+	}
+	if(!camera->GetFreeMove()) UpdateCameraMovement(dt);
 	camera->UpdateCamera(dt);
+
+
 	viewMatrix = camera->BuildViewMatrix();
 	projMatrix = Matrix4::Perspective(1.0f, 90000.0f, (float)width / (float)height, 90.0f);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);

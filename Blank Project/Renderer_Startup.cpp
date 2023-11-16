@@ -217,7 +217,7 @@ bool Renderer::SetUpCrystals()
 			(
 				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				500.0f,
+				700.0f,
 				crystalModel1,
 				crystalTexture1,
 				crystalBump1
@@ -288,4 +288,36 @@ bool Renderer::SetUpSun()
 
 	spaceRoot->AddChild(sun);
 	return true;
+}
+
+void Renderer::SetUpCameraKeyFrames()
+{
+	AddCameraKeyFrame(Vector3(24174.8, 3312.67, 7907.53), Vector3(-3.28, 165.19, 0)); // 0
+	AddCameraKeyFrame(Vector3(25776.7, 2967.56, 11433.8), Vector3(5.26, 225.95, -5));
+	AddCameraKeyFrame(Vector3(27447.6, 2021.92, 14204.2), Vector3(12.26, 133.829, 2.5));
+	AddCameraKeyFrame(Vector3(27666.3, 2757.5, 16105.7), Vector3(-2.37, 69.919, 20.5));
+	AddCameraKeyFrame(Vector3(25303.6, 3402.68, 20467.8), Vector3(-16.72, 47.219, 8.5));
+	AddCameraKeyFrame(Vector3(25389, 4724.11, 22105.6), Vector3(-18.68, 57.0393, 0));
+	AddCameraKeyFrame(Vector3(23345.5, 3042.83, 25329.4), Vector3(19.68, 56.3394, -2.5));
+
+	AddCameraKeyFrame(Vector3(20325, 5024.69, 25561.1), Vector3(-27.57, 89.0293, 7));
+	AddCameraKeyFrame(Vector3(14930.9, 1841.56, 28449.7), Vector3(-21.62, 40.7293, -16.5));
+	AddCameraKeyFrame(Vector3(10220, 1841.56, 26711.1), Vector3(15.13, -24.4407, -21));
+
+	AddCameraKeyFrame(Vector3(6408.33, 1841.56, 23910.8), Vector3(-7.9, 33.5193, 10.5));
+	AddCameraKeyFrame(Vector3(3531.42, 3057.34, 17650.9), Vector3(-40.17, -53.7707, 3));
+	AddCameraKeyFrame(Vector3(14926.6, 1826.32, 2392.37), Vector3(-15.67, -70.3608, 0));
+	AddCameraKeyFrame(Vector3(20294.2, 7576.22, 4030.8), Vector3(-45.7, -194.401, 0));
+	AddCameraKeyFrame(Vector3(22057.7, 13146.3, 14489.4), Vector3(-69.57, -250.401, 0));
+	//AddCameraKeyFrame(Vector3(), Vector3());
+	//AddCameraKeyFrame(Vector3(), Vector3());
+
+	cameraKeyFrameCount_Planet = cameraPositions_Planet.size();
+	currentKeyFrame = 0;
+
+}
+void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot)
+{
+	cameraPositions_Planet.push_back(pos);
+	cameraRotations_Planet.push_back(rot);
 }

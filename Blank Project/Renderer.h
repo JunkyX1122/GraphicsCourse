@@ -27,7 +27,18 @@ public:
 	 float manualMove = 0.0f;
 protected:
 	int renderSceneType;
+
 	Camera* camera;
+	int cameraAutoMoveType;
+	float cameraTimer;
+	vector<Vector3> cameraPositions_Planet;
+	vector<Vector3> cameraRotations_Planet;
+	int cameraKeyFrameCount_Planet;
+	int currentKeyFrame;
+	void SetUpCameraKeyFrames();
+	void AddCameraKeyFrame(Vector3 pos, Vector3 rot);
+	void UpdateCameraMovement(float dt);
+	float naive_lerp(float a, float b, float t);
 
 	SceneNode* planetSurfaceRoot;
 	SceneNode* spaceRoot;

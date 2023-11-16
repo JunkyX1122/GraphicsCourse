@@ -6,12 +6,14 @@ class Camera {
 public:
 	Camera(void)
 	{
+		cameraFreeMove = true;
 		yaw = 0.0f;
 		pitch = 0.0f;
 		roll = 0.0f;
 	}
 	Camera(float pitch, float yaw, Vector3 position)
 	{
+		cameraFreeMove = true;
 		this->pitch = pitch;
 		this->yaw = yaw;
 		this->position = position;
@@ -27,6 +29,9 @@ public:
 	Vector3 GetPosition() const { return position; }
 	void SetPosition(Vector3 val) { position = val; }
 
+	Vector3 GetPositionSetter() const { return positionSetter; }
+	void SetPositionSetter(Vector3 val) { positionSetter = val; }
+
 	float GetYaw() const { return yaw; }
 	void SetYaw(float val) { yaw = val; }
 
@@ -36,10 +41,19 @@ public:
 	float GetRoll() const { return roll; }
 	void SetRoll(float val) { roll = val; }
 
+	Vector3 GetRotationSetter() const { return rotationsSetter; }
+	void SetRotationSetter(Vector3 val) { rotationsSetter = val; }
+
+	void LockFreeMovement() { cameraFreeMove = false; }
+	void UnlockFreeMovement() { cameraFreeMove = true; }
+	bool GetFreeMove() { return cameraFreeMove; }
+
 protected:
-	float yaw;
+	bool cameraFreeMove;
 	float pitch;
+	float yaw;
 	float roll;
+	Vector3 rotationsSetter;
 	Vector3 position;
 	Vector3 positionSetter;
 };

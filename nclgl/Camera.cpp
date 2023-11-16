@@ -4,19 +4,21 @@
 using namespace std;
 void Camera::UpdateCamera(float dt)
 {
-	pitch	-= (Window::GetMouse()->GetRelativePosition().y);
-	yaw		-= (Window::GetMouse()->GetRelativePosition().x);
-
-	pitch = std::min(pitch,  90.0f);
-	pitch = std::max(pitch, -90.0f);
+	if (GetFreeMove())
+	{
+		rotationsSetter.x -= (Window::GetMouse()->GetRelativePosition().y);
+		rotationsSetter.y -= (Window::GetMouse()->GetRelativePosition().x);
+	}
+	rotationsSetter.x = std::min(rotationsSetter.x,  90.0f);
+	rotationsSetter.x = std::max(rotationsSetter.x, -90.0f);
 	
 	if (yaw < 0)
 	{
-		yaw += 360.0f;
+		//yaw += 360.0f;
 	}
 	if (yaw > 360.0f)
 	{
-		yaw -= 360.0f;
+		//yaw -= 360.0f;
 	}
 
 
@@ -32,52 +34,64 @@ void Camera::UpdateCamera(float dt)
 	}
 
 	float speed = 120.0f * dt * speedMultiplier;
+	if (GetFreeMove())
+	{
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_W))
+		{
+			positionSetter += forward * speed;
+		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_S))
+		{
+			positionSetter -= forward * speed;
+		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_A))
+		{
+			positionSetter -= right * speed;
+		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_D))
+		{
+			positionSetter += right * speed;
+		}
 
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_W))
-	{
-		positionSetter += forward * speed;
-	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_S))
-	{
-		positionSetter -= forward * speed;
-	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_A))
-	{
-		positionSetter -= right * speed;
-	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_D))
-	{
-		positionSetter += right * speed;
-	}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT))
+		{
+			positionSetter.y -= speed;
+		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE))
+		{
+			positionSetter.y += speed;
+		}
 
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SHIFT))
-	{
-		positionSetter.y -= speed;
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q))
+		{
+			rotationsSetter.z += 0.5f;
+		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_E))
+		{
+			rotationsSetter.z -= 0.5f;
+		}
 	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_SPACE))
+	float dampenCam = 0.01f;
+	float dampenRot = 0.01f;
+	if (GetFreeMove()) 
 	{
-		positionSetter.y += speed;
+		dampenCam = 0.5f;
+		dampenRot = 0.5f;
 	}
-
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_Q))
-	{
-		roll += 0.5f;
-	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_E))
-	{
-		roll -= 0.5f;
-	}
-	position = position * 0.95f + positionSetter * 0.05f;
+	position = position * (1.0f - dampenCam) + positionSetter * dampenCam;
+	pitch = pitch * (1.0f - dampenRot) + rotationsSetter.x * dampenRot;
+	yaw = yaw * (1.0f - dampenRot) + rotationsSetter.y * dampenRot;
+	roll = roll * (1.0f - dampenRot) + rotationsSetter.z * dampenRot;
 
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_P))
 	{
-		cout <<
-			"X:		" << position.x << endl <<
-			"Y:		" << position.y << endl <<
-			"Z:		" << position.z << endl <<
-			"PITCH:	" << pitch << endl <<
-			"YAW:	" << yaw << endl <<
-			"ROLL:	" << roll << endl
+		cout 
+			<< position.x << "," 
+			<< position.y << "," 
+			<< position.z << endl  
+			<< pitch << "," 
+			<< yaw << "," 
+			<< roll << endl
 			;
 	}
 }
