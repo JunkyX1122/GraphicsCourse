@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-const int POST_PASSES = 100;
+const int POST_PASSES = 1;
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 {
@@ -51,6 +51,8 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glEnable(GL_DEPTH_TEST);
 	init = true;
+	testValue = 0.0f;
+	testValueRange = 301;
 }
 
 Renderer::~Renderer(void)
@@ -69,6 +71,27 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt)
 {
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_I))
+	{
+		testValue -= 0.0005f;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_O))
+	{
+		testValue += 0.0005f;
+	}
+
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_K))
+	{
+		testValueRange -= 1;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_L))
+	{
+		testValueRange += 1;
+	}
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_P))
+	{
+		std::cout << "Bloom Intensity:" << testValue << "\n";
+	}
 	camera->UpdateCamera(dt);
 	viewMatrix = camera->BuildViewMatrix();
 }
@@ -123,6 +146,7 @@ void Renderer::DrawPostProcess()
 
 	//=========================================================
 
+	
 
 
 	BindShader(processShader2);
@@ -133,9 +157,10 @@ void Renderer::DrawPostProcess()
 
 	glDisable(GL_DEPTH_TEST);
 
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0); 
 	glUniform1i(glGetUniformLocation(processShader2->GetProgram(), "sceneTex"), 0);
-
+	glUniform1i(glGetUniformLocation(processShader2->GetProgram(), "bloomRange"), testValueRange);
+	glUniform1f(glGetUniformLocation(processShader2->GetProgram(), "bloomIntensity"), testValue);
 	for (int i = 0; i < POST_PASSES * 2; i++)
 	{
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[1 + ((i+1) % 2)], 0);

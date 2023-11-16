@@ -16,7 +16,8 @@ protected:
 	void PresentScene();
 	void DrawPostProcess();
 	void DrawScene();
-
+	float testValue;
+	int testValueRange;
 	Shader* sceneShader;
 	Shader* getBrightShader;
 	Shader* processShader;

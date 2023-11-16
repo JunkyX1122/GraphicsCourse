@@ -3,22 +3,14 @@
 uniform sampler2D sceneTex;
 
 uniform int isVertical;
-
+uniform int bloomRange;
+uniform float bloomIntensity;
 in Vertex
 {
 	vec2 texCoord;
 } IN;
 
 out vec4 fragColor;
-
-const float scaleFactors[7] = float[](0.006 , 0.061 , 0.242 , 0.383 , 0.242 , 0.061 , 0.006);
-
-float pdf(float x, float  mu=0.0f, float  sigma=1.0f)
-{
-    x = (x - mu) / sigma;
-    return (exp(-x*x/2.0f) / sqrt(2.0f*3.14159f) / sigma);
-}
-
 
 void main(void)
 {
@@ -33,17 +25,23 @@ void main(void)
 	{
 		delta = dFdx(IN.texCoord);
 	}
-	int z = 0;
-    float border = 4;
-    float ranger = 7;
+	float z = 0;
+    int ranger = bloomRange;
+	float startCurve = 8.0f;
 	for(int i = 0; i < ranger; i++)
 	{
-		vec2 offset = delta * (i - 3);
+		vec2 offset = delta * (z - (ranger-1)/2);
 		vec4 tmp = texture2D(sceneTex, IN.texCoord.xy + offset);
 		
+		float curve = 1.0/(pow(2.0, 
+		abs(
+
+		-startCurve + (startCurve*2)/(ranger-1) * z
 		
-		fragColor += tmp * scaleFactors[i] ;
-		z+=1;
+		)
+		));
+		fragColor += tmp * curve * bloomIntensity;
+		z+=1.0;
 	}
 }
 
