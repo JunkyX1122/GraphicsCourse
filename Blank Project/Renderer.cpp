@@ -69,6 +69,68 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 Renderer::~Renderer(void)	
 {
 	delete camera;
+
+	delete modelShader;
+	delete rockModel1;
+	glDeleteTextures(1, &rockTexture1);
+	glDeleteTextures(1, &rockBump1);
+
+	delete crystalModel1;
+	glDeleteTextures(1, &crystalTexture1);
+	glDeleteTextures(1, &crystalBump1);
+
+	delete planetModel;
+	glDeleteTextures(1, &planetTexture);
+	glDeleteTextures(1, &planetCloudTexture);
+	glDeleteTextures(1, &planetBump);
+	delete planetShader;
+
+	delete sceneShader;
+	delete pointLightShader;
+	delete combineShader;
+
+	glDeleteFramebuffers(1, &shadowFBO);
+	glDeleteTextures(1, &shadowTex);
+	delete shadowSceneShader;
+	delete shadowShader;
+
+	delete heightMap;
+	glDeleteTextures(1, &seaBedTexture);
+	glDeleteTextures(1, &seaBedBumpMap);
+	glDeleteTextures(1, &groundTexture);
+	glDeleteTextures(1, &groundBumpMap);
+	glDeleteTextures(1, &highGroundTexture);
+	glDeleteTextures(1, &highGroundBumpMap);
+
+	glDeleteTextures(1, &waterTex);
+	delete reflectShader;
+	delete waterQuad;
+
+	glDeleteFramebuffers(1, &bufferFBO);
+	glDeleteTextures(4, bufferColourTex);
+	glDeleteTextures(1, &bufferNormalTex);
+	glDeleteTextures(1, &bufferDepthTex);
+
+	glDeleteFramebuffers(1, &pointLightFBO);
+	glDeleteTextures(1, &lightDiffuseTex);
+	glDeleteTextures(1, &lightSpecularTex);
+	delete sphere;
+	delete quad;
+	delete[] pointLights;
+
+	delete globalSceneLight;
+	glDeleteTextures(1, &skyBox_Planet);
+	glDeleteTextures(1, &skyBox_Space);
+	delete skybox_Planet_Shader;
+	delete skyBox;
+
+	glDeleteFramebuffers(1, &processFBO);
+	delete processShaderGetBright;
+	delete processShaderBlur;
+	delete processShaderBloom;
+
+
+	delete camera;
 	delete heightMap;
 	delete quad;
 	delete globalSceneLight;
@@ -77,25 +139,10 @@ Renderer::~Renderer(void)
 	delete combineShader;
 	delete pointLightShader;
 
-	glDeleteTextures(3, bufferColourTex);
-	glDeleteTextures(1, &bufferNormalTex);
-	glDeleteTextures(1, &bufferDepthTex);
-	glDeleteTextures(1, &lightDiffuseTex);
-	glDeleteTextures(1, &lightSpecularTex);
-
-	glDeleteFramebuffers(1, &bufferFBO);
-	glDeleteFramebuffers(1, &pointLightFBO);
-
-	delete skybox_Planet_Shader;
-	delete skyBox;
-
-	delete waterQuad;
-
-	//delete triangle;
+	delete triangle;
 	delete basicShader;
-
-	delete modelShader;
-	delete planetShader;
+	glDeleteTextures(1, &basicTexture);
+	glDeleteTextures(1, &basicBump);
 }
 
 void Renderer::UpdateScene(float dt) 
