@@ -14,11 +14,18 @@ void Renderer::UpdatePointLights(float dt)
 
 void Renderer::UpdateCameraMovement(float dt)
 {
-	cameraTimer += dt/8;
-	if (cameraTimer >= 1)
+	cameraTimer += dt * cameraAnimateSpeed;
+	if (cameraTimer > 1)
 	{
 		cameraTimer = 0;
 		currentKeyFrame = (currentKeyFrame + 1) % cameraKeyFrameCount_Planet;
+		std::cout << currentKeyFrame << "\n";
+	}
+	if (cameraTimer < 0)
+	{
+		cameraTimer = 1;
+		currentKeyFrame--;
+		if (currentKeyFrame < 0) currentKeyFrame = cameraKeyFrameCount_Planet - 1;
 		std::cout << currentKeyFrame << "\n";
 	}
 	Vector3 pos1 = cameraPositions_Planet[currentKeyFrame];

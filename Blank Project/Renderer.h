@@ -35,6 +35,7 @@ protected:
 	vector<Vector3> cameraRotations_Planet;
 	int cameraKeyFrameCount_Planet;
 	int currentKeyFrame;
+	float cameraAnimateSpeed;
 	void SetUpCameraKeyFrames();
 	void AddCameraKeyFrame(Vector3 pos, Vector3 rot);
 	void UpdateCameraMovement(float dt);

@@ -142,6 +142,23 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_PLUS))
+	{
+		cameraAnimateSpeed += 0.001f;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_MINUS))
+	{
+		cameraAnimateSpeed -= 0.001f;
+	}
+
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RIGHT))
+	{
+		cameraAnimateSpeed = 1.0f/8.0f;
+	}
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_LEFT))
+	{
+		cameraAnimateSpeed = -1.0f/8.0f;
+	}
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_M))
 	{
 		if (camera->GetFreeMove()) 

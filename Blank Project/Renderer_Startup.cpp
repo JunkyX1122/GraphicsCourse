@@ -217,7 +217,7 @@ bool Renderer::SetUpCrystals()
 			(
 				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				700.0f,
+				1000.0f,
 				crystalModel1,
 				crystalTexture1,
 				crystalBump1
@@ -314,6 +314,7 @@ void Renderer::SetUpCameraKeyFrames()
 
 	cameraKeyFrameCount_Planet = cameraPositions_Planet.size();
 	currentKeyFrame = 0;
+	cameraAnimateSpeed = 1 / 8;
 
 }
 void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot)
