@@ -160,6 +160,8 @@ void Renderer::CombineBuffers()
 	glUniform1i(glGetUniformLocation(combineShader->GetProgram(), "specularLight"), 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, lightSpecularTex);
+
+	glUniform1f(glGetUniformLocation(combineShader->GetProgram(), "diffuseDarken"), GetSceneType() == 0 ? 0.5f : 1.0f);
 	quad->Draw();
 }
 

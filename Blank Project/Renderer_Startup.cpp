@@ -240,3 +240,52 @@ bool Renderer::SetUpCrystals()
 
 	return true;
 }
+
+bool Renderer::SetUpMainPlanet()
+{
+	
+	planetTexture = SOIL_load_OGL_texture(TEXTUREDIR"Mars.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	planetCloudTexture = SOIL_load_OGL_texture(TEXTUREDIR"Planet_Sky.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	planetBump = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+
+	SetTextureRepeating(planetTexture, false);
+	SetTextureRepeating(planetCloudTexture, true);
+	SetTextureRepeating(planetBump, false);
+
+	if (!planetTexture) return false;
+	if (!planetCloudTexture) return false;
+	if (!planetBump) return false;
+	planet = new SceneNode();
+	planet->SetBoundingRadius(1000.0f);
+	planet->SetModelScale(Vector3(1000.0f, 1000.0f, 1000.0f));
+	planet->SetMesh(planetModel);
+	planet->SetTexture(planetTexture);
+	planet->SetTexture2(planetCloudTexture);
+	planet->SetBump(planetBump);
+	planet->SetTransform(Matrix4::Translation(Vector3(50000.0f, 1000.0f, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
+	planetCycle = 0.0f;
+	planet->SetTag(SCENENODETAG_PLANET);
+	spaceRoot->AddChild(planet);
+	return true;
+}
+
+bool Renderer::SetUpSun()
+{
+
+	sunTexture = SOIL_load_OGL_texture(TEXTUREDIR"Sun.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	SetTextureRepeating(sunTexture, false);
+	if (!sunTexture) return false;
+
+	sun = new SceneNode();
+	sun->SetBoundingRadius(5000.0f);
+	sun->SetModelScale(Vector3(5000.0f, 5000.0f, 5000.0f));
+	sun->SetMesh(planetModel);
+	sun->SetTexture(sunTexture);
+	sun->SetTexture2(sunTexture);
+	sun->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
+	sun->SetTag(SCENENODETAG_PLANET);
+	sun->SetLightingInfluence(0);
+
+	spaceRoot->AddChild(sun);
+	return true;
+}

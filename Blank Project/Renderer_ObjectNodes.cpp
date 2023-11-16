@@ -11,29 +11,10 @@ bool Renderer::ManagePlanetSurfaceSceneNodes()
 bool Renderer::ManageSpaceSceneNodes()
 {
 	planetModel = Mesh::LoadFromMeshFile("Mars.msh");
-	planetTexture = SOIL_load_OGL_texture(TEXTUREDIR"Mars.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	planetCloudTexture = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	planetBump = SOIL_load_OGL_texture(TEXTUREDIR"EmptyBump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-
-	SetTextureRepeating(planetTexture, false);
-	SetTextureRepeating(planetCloudTexture, true);
-	SetTextureRepeating(planetBump, false);
-
-
 	if (!planetModel) return false;
-	if (!planetTexture) return false;
-	if (!planetCloudTexture) return false;
-	if (!planetBump) return false;
-	planet = new SceneNode();
-	planet->SetBoundingRadius(1000.0f);
-	planet->SetModelScale(Vector3(5000.0f, 5000.0f, 5000.0f));
-	planet->SetMesh(planetModel);
-	planet->SetTexture(planetTexture);
-	planet->SetBump(planetBump);
-	planet->SetTransform(Matrix4::Translation(Vector3(50000.0f, 1000.0f, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
-	planetCycle = 0.0f;
-	planet->SetTag(SCENENODETAG_PLANET);
-	spaceRoot->AddChild(planet);
+
+	if (!SetUpMainPlanet()) return false;
+	if (!SetUpSun()) return false;
 	return true;
 }
 
@@ -138,12 +119,15 @@ void Renderer::DrawNodes(SceneNode* n)
 			glBindTexture(GL_TEXTURE_2D, basicBump);
 
 			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "diffuseTex2"), 2);
-			basicTexture = planetCloudTexture;
+			basicTexture = n->GetTexture2();
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, basicTexture);
 
 			glUniform3fv(glGetUniformLocation(planetShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
 			glUniform1f(glGetUniformLocation(planetShader->GetProgram(), "timer"), planetCycle);
+
+			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "lightInfluence"), n->GetLightingInfluence());
+
 
 			SetShaderLight(*globalSceneLight);
 			n->Draw(*this);			

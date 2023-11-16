@@ -122,7 +122,6 @@ Renderer::~Renderer(void)
 	delete processShaderBlur;
 	delete processShaderBloom;
 
-
 	delete camera;
 	delete heightMap;
 	delete quad;

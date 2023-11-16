@@ -60,6 +60,11 @@ protected:
 	Shader* planetShader;
 	SceneNode* planet;
 	float planetCycle;
+	bool SetUpMainPlanet();
+
+	GLuint sunTexture;
+	SceneNode* sun;
+	bool SetUpSun();
 
 	Shader* sceneShader;
 	Shader* pointLightShader;

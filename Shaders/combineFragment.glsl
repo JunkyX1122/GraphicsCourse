@@ -4,6 +4,7 @@ uniform sampler2D diffuseTex;
 uniform sampler2D diffuseLight;
 uniform sampler2D specularLight;
 
+uniform float diffuseDarken;
 in Vertex 
 {
 	vec2 texCoord;
@@ -17,7 +18,7 @@ void main(void)
 	vec3 light = texture(diffuseLight, IN.texCoord).xyz;
 	vec3 specular = texture(specularLight, IN.texCoord).xyz;
 
-	fragColour.xyz = diffuse * 0.5;
+	fragColour.xyz = diffuse * diffuseDarken;
 	fragColour.xyz += diffuse * light;
 	fragColour.xyz += specular;
 	fragColour.a = 1.0;

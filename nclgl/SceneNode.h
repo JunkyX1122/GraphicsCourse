@@ -52,11 +52,17 @@ public:
 	GLuint GetTexture() const { return texture; }
 	void SetTexture(GLuint tex) { texture = tex; }
 
+	GLuint GetTexture2() const { return texture2; }
+	void SetTexture2(GLuint tex) { texture2 = tex; }
+
 	GLuint GetBump() const { return bump; }
 	void SetBump(GLuint b) { bump = b; }
 
 	int GetTag() { return tag; }
 	void SetTag(int i) { tag = i; }
+
+	int GetLightingInfluence() { return lightingInfluence; }
+	void SetLightingInfluence(int b) { lightingInfluence = b; }
 
 	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b)
 	{
@@ -86,7 +92,9 @@ protected:
 	float distanceFromCamera;
 	float boundingRadius;
 	GLuint texture;
+	GLuint texture2;
 	GLuint bump;
 
 	int tag = SCENENODETAG_NULL;
+	int lightingInfluence = 1;
 };
