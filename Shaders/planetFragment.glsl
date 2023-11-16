@@ -9,6 +9,7 @@ uniform vec3 lightPos;
 uniform float lightRadius;
 
 uniform float timer;
+uniform vec4 transformValues;
 uniform int lightInfluence;
 in Vertex 
 {
@@ -33,8 +34,10 @@ void main(void)
 	vec2 longitudeLatitude = vec2((atan(IN.texCoord.y, IN.texCoord.x) / 3.1415926 + 1.0) * 0.5,
                                   (asin(IN.texCoord.z) / 3.1415926 + 0.5));
 
-	float timerAlt = timer * 0.1f * 0.25f * 0.25f;
-	vec2 texCoordsTransformed = longitudeLatitude + vec4(0, 0, timerAlt, timerAlt).zw;
+	//float timerAlt = timer * 0.1f * 0.25f * 0.25f;
+	vec2 texCoordsTransformed = (longitudeLatitude * transformValues.xy) + transformValues.zw;
+
+
 
 	vec4 diffuse = texture(diffuseTex, longitudeLatitude);
 	vec4 diffuse2 = texture(diffuseTex2, texCoordsTransformed);

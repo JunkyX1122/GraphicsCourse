@@ -1,7 +1,7 @@
 #include "HeightMap.h"
 #include <iostream>
 
-const float HEIGHTMAP_SCALE = 1.0f;
+const float HEIGHTMAP_SCALE = 30.0f;
 HeightMap::HeightMap(const std::string& name, float textureSize = 16.0f, int smoothLevel = 0)
 {
 	

@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-const int POST_PASSES = 1;
+const int POST_PASSES = 10;
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 {

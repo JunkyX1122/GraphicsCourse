@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#define POST_PASSES 10
 
 bool Renderer::CreateBuffers()
 {
@@ -203,8 +202,9 @@ void Renderer::ManagePostProcess()
 
 	glActiveTexture(GL_TEXTURE0);
 	glUniform1i(glGetUniformLocation(processShaderBlur->GetProgram(), "sceneTex"), 0);
-
-	for (int i = 0; i < POST_PASSES * 2; i++)
+	glUniform1i(glGetUniformLocation(processShaderBlur->GetProgram(), "bloomRange"), 401);
+	glUniform1f(glGetUniformLocation(processShaderBlur->GetProgram(), "bloomIntensity"), 0.0195);
+	for (int i = 0; i < 1 * 2; i++)
 	{
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[2 + ((i + 1) % 2)], 0);
 		glUniform1i(glGetUniformLocation(processShaderBlur->GetProgram(), "isVertical"), i % 2);

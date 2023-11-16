@@ -7,6 +7,7 @@
 
 #define SCENENODETAG_NULL -1
 #define SCENENODETAG_PLANET 0
+#define SCENENODETAG_SUN 1
 
 
 class SceneNode

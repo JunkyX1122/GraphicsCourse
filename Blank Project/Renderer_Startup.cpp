@@ -283,7 +283,7 @@ bool Renderer::SetUpSun()
 	sun->SetTexture(sunTexture);
 	sun->SetTexture2(sunTexture);
 	sun->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
-	sun->SetTag(SCENENODETAG_PLANET);
+	sun->SetTag(SCENENODETAG_SUN);
 	sun->SetLightingInfluence(0);
 
 	spaceRoot->AddChild(sun);

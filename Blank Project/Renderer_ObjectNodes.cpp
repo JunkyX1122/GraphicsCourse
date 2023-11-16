@@ -124,10 +124,10 @@ void Renderer::DrawNodes(SceneNode* n)
 			glBindTexture(GL_TEXTURE_2D, basicTexture);
 
 			glUniform3fv(glGetUniformLocation(planetShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
-			glUniform1f(glGetUniformLocation(planetShader->GetProgram(), "timer"), planetCycle);
-
 			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "lightInfluence"), n->GetLightingInfluence());
 
+			float timerAlt = tag == 0 ? planetCycle * 0.1f * 0.25f * 0.25f : -planetCycle * 0.1f * 0.5f;
+			glUniform4fv(glGetUniformLocation(planetShader->GetProgram(), "transformValues"), 1, (float*)&Vector4(1.0f, 1.0f, timerAlt, timerAlt));
 
 			SetShaderLight(*globalSceneLight);
 			n->Draw(*this);			
