@@ -101,34 +101,47 @@ void Renderer::DrawNodes(SceneNode* n)
 		}
 		else
 		{
-			
-			BindShader(planetShader);
+			bool easterEggCheck = easterEgg && tag == SCENENODETAG_SUN;
+			if (easterEggCheck)
+			{
+				n->SetMesh(quad);
+				glDisable(GL_CULL_FACE);
+			}
+			else
+			{
+				n->SetMesh(planetModel);
+			}
+			Shader* shaderInUse = planetShader;
+			BindShader(shaderInUse);
 			UpdateShaderMatrices();
 			
 			Matrix4 model = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
 
-			glUniformMatrix4fv(glGetUniformLocation(planetShader->GetProgram(), "modelMatrix"), 1, false, model.values);
+			glUniformMatrix4fv(glGetUniformLocation(shaderInUse->GetProgram(), "modelMatrix"), 1, false, model.values);
 
-			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "diffuseTex"), 0);
+			glUniform1i(glGetUniformLocation(shaderInUse->GetProgram(), "diffuseTex"), 0);
 			basicTexture = n->GetTexture();
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, basicTexture);
+			glBindTexture(GL_TEXTURE_2D, easterEggCheck ? easterEggTex : basicTexture);
 
-			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "bumpTex"), 1);
+			glUniform1i(glGetUniformLocation(shaderInUse->GetProgram(), "bumpTex"), 1);
 			basicBump = n->GetBump();
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, basicBump);
+			glBindTexture(GL_TEXTURE_2D, easterEggCheck ? easterEggTex : basicBump);
 
-			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "diffuseTex2"), 2);
+			glUniform1i(glGetUniformLocation(shaderInUse->GetProgram(), "diffuseTex2"), 2);
 			basicTexture = n->GetTexture2();
 			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, basicTexture);
+			glBindTexture(GL_TEXTURE_2D, easterEggCheck ? easterEggTex : basicTexture);
 
-			glUniform3fv(glGetUniformLocation(planetShader->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
-			glUniform1i(glGetUniformLocation(planetShader->GetProgram(), "lightInfluence"), n->GetLightingInfluence());
+			glUniform3fv(glGetUniformLocation(shaderInUse->GetProgram(), "cameraPos"), 1, (float*)&camera->GetPosition());
+			glUniform1i(glGetUniformLocation(shaderInUse->GetProgram(), "lightInfluence"), n->GetLightingInfluence());
 
 			float timerAlt = tag == 0 ? planetCycle * 0.1f * 0.25f * 0.25f : -planetCycle * 0.1f * 0.5f;
-			glUniform4fv(glGetUniformLocation(planetShader->GetProgram(), "transformValues"), 1, (float*)&Vector4(1.0f, 1.0f, timerAlt, timerAlt));
+			glUniform4fv(glGetUniformLocation(shaderInUse->GetProgram(), "transformValues"), 1, (float*)&Vector4(1.0f, 1.0f, timerAlt, timerAlt));
+
+			glUniform1i(glGetUniformLocation(shaderInUse->GetProgram(), "easterEgg"), easterEggCheck ? 1 : 0);
+			glUniform1i(glGetUniformLocation(shaderInUse->GetProgram(), "easterEggV"), easterEggCheck ? 1 : 0);
 
 			SetShaderLight(*globalSceneLight);
 			n->Draw(*this);			

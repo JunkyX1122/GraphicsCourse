@@ -131,11 +131,33 @@ void Renderer::UpdateNodes(float dt)
 		break;
 
 	case(1):
+		if (
+			Window::GetKeyboard()->KeyDown(KEYBOARD_1) && 
+			Window::GetKeyboard()->KeyDown(KEYBOARD_9) && 
+			Window::GetKeyboard()->KeyDown(KEYBOARD_4) )
+		{
+			easterEgg = true;
+		}
+		else
+		{
+			easterEgg = false;
+		}
 		spaceRoot->SetTransform(spaceRoot->GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
 		planet->SetTransform(planet->GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1)));
 		asteroidParent->SetTransform(asteroidParent->GetTransform() * Matrix4::Rotation(-dt * 8.0f, Vector3(0, 1, 0)));
-		sun->SetTransform(sun->GetTransform() * Matrix4::Rotation(-dt * 4.0f, Vector3(0, 0, 1)));
-
+		
+		if (easterEgg)
+		{
+			sun->SetBoundingRadius(5000.0f * 3);
+			sun->SetModelScale(Vector3(5000.0f, 5000.0f, 5000.0f) * 3);
+		}
+		else
+		{
+			sun->SetBoundingRadius(5000.0f);
+			sun->SetModelScale(Vector3(5000.0f, 5000.0f, 5000.0f));
+		}
+		float spd = easterEgg ? 64.0f * 4.0f : 4.0f;
+		sun->SetTransform(sun->GetTransform() * Matrix4::Rotation(-dt * spd, Vector3(0, 0, 1)));
 		for (int i = 0; i < asteroidParent->GetChildCount(); i++)
 		{
 			SceneNode* s = asteroidParent->GetChild(i);

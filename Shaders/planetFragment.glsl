@@ -11,6 +11,7 @@ uniform float lightRadius;
 uniform float timer;
 uniform vec4 transformValues;
 uniform int lightInfluence;
+uniform int easterEgg;
 in Vertex 
 {
 	vec3 colour;
@@ -36,6 +37,12 @@ void main(void)
 
 	//float timerAlt = timer * 0.1f * 0.25f * 0.25f;
 	vec2 texCoordsTransformed = (longitudeLatitude * transformValues.xy) + transformValues.zw;
+
+	if(easterEgg==1)
+	{
+		longitudeLatitude = IN.texCoord.xy;
+		texCoordsTransformed = IN.texCoord.xy;
+	}
 
 
 

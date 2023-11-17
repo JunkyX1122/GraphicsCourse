@@ -173,5 +173,6 @@ protected:
 	GLuint basicTexture;
 	GLuint basicBump;
 
-
+	bool easterEgg = false;
+	GLuint easterEggTex;
 };

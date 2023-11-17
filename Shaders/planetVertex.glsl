@@ -11,6 +11,7 @@ in vec4 tangent;
 in vec2 texCoord;
 in vec3 vertexCoord;
 
+uniform int easterEggV;
 out Vertex 
 {
 	vec4 colour;
@@ -23,8 +24,6 @@ out Vertex
 
 void main(void)
 {
-	
-
 	mat3 normalMatrix = transpose ( inverse ( mat3 ( modelMatrix )));
 
 	vec3 wNormal = normalize ( normalMatrix * normalize ( normal ));
@@ -40,5 +39,12 @@ void main(void)
 	gl_Position = ( projMatrix * viewMatrix ) * worldPos;
 
 	OUT.colour = colour;
-	OUT.texCoord = vec4(position, 1.0);
+	if(easterEggV == 0)
+	{
+		OUT.texCoord = vec4(position, 1.0);
+	}
+	else
+	{
+		OUT.texCoord = vec4(texCoord.x, texCoord.y, 1.0, 1.0);
+	}
 }

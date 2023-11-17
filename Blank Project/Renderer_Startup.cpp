@@ -273,6 +273,9 @@ bool Renderer::SetUpMainPlanet()
 bool Renderer::SetUpSun()
 {
 
+	easterEggTex = SOIL_load_OGL_texture(TEXTUREDIR"OIP.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	SetTextureRepeating(easterEggTex, true);
+
 	sunTexture = SOIL_load_OGL_texture(TEXTUREDIR"Sun.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 	SetTextureRepeating(sunTexture, false);
 	if (!sunTexture) return false;
