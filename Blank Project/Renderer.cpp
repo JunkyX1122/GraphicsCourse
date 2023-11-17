@@ -189,8 +189,8 @@ void Renderer::UpdateScene(float dt)
 	projMatrix = Matrix4::Perspective(1.0f, 90000.0f, (float)width / (float)height, cameraFOV);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 
-	waterRotate += dt * 2.0f;
-	waterCycle += dt * 0.25f;
+	waterRotate += dt * 0.3f;
+	waterCycle += dt * 0.01f;
 	planetCycle += dt * 1.0f;
 	
 	UpdatePointLights(dt);
