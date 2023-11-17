@@ -393,8 +393,8 @@ bool Renderer::SetUpCamera()
 	AddCameraKeyFrame(Vector3(23345.5f, 3042.83f, 25329.4f), Vector3(19.68f , 56.3394f, -2.5f		), defaultTime);
 
 	AddCameraKeyFrame(Vector3(20325.0f, 5024.69f, 25561.1f), Vector3(-27.57f, 89.0293f , 7.0f		), defaultTime);
-	AddCameraKeyFrame(Vector3(14930.9f, 1841.56f, 28449.7f), Vector3(-21.62f, 40.7293f , -16.5f		), defaultTime);
-	AddCameraKeyFrame(Vector3(10220.0f, 1841.56f, 26711.1f), Vector3(15.13f , -24.4407f, -21.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(14930.9f, 1196.40f, 28449.7f), Vector3(-21.62f, 40.7293f , -16.5f		), defaultTime);
+	AddCameraKeyFrame(Vector3(10220.0f, 686.524f, 26711.1f), Vector3(15.13f , -24.4407f, -21.0f		), defaultTime);
 
 	AddCameraKeyFrame(Vector3(6408.33f, 1841.56f, 23910.8f), Vector3(-7.9f  , 33.5193f , 10.5f		), defaultTime);
 	AddCameraKeyFrame(Vector3(3531.42f, 3057.34f, 17650.9f), Vector3(-40.17f, -53.7707f, 3.0f		), defaultTime);

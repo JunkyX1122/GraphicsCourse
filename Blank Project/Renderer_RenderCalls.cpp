@@ -99,7 +99,7 @@ void Renderer::DrawWater()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox_Planet);
 
-	Vector3 hSize = heightMap->GetHeightMapSize();
+	Vector3 hSize = heightMapSize;
 
 	modelMatrix =
 		Matrix4::Translation(Vector3(hSize.x * 0.5f, hSize.y / 8.0f * 1.75f, hSize.z * 0.5f)) *

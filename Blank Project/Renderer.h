@@ -171,6 +171,7 @@ protected:
 	float pixelSize;
 	Vector2 screenSize;
 	Vector4 colourCorrection;
+	Vector4 colourCorrectionCurrent;
 
 	Mesh*	triangle;
 	Shader* basicShader;

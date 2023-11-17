@@ -133,6 +133,16 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
+	colourCorrectionCurrent = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	if (camera->GetPosition().y < heightMapSize.y / 8.0f * 1.75f && GetSceneType() == 0)
+	{
+		colourCorrectionCurrent = Vector4(0.5f, 1.0f, 0.5f, 1.0f);
+	}
+	if (introTimer == 0.0f)
+	{
+		colourCorrectionCurrent = Vector4(0,0,0,1.0f);
+	}
+	colourCorrection = colourCorrectionCurrent;
 	if (!introFlag)
 	{
 		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SPACE) && !camera->GetFreeMove())
@@ -182,6 +192,9 @@ void Renderer::UpdateScene(float dt)
 		}
 		
 	}
+
+	
+	
 	camera->UpdateCamera(dt);
 
 
@@ -216,7 +229,11 @@ void Renderer::Transition(float dt)
 	transitionTimer -= dt;
 	float transitioner = sin(PI/2 * abs(transitionTimer));
 	pixelSize = round(1 + 50 - 50 * transitioner);
-	colourCorrection = Vector4(1.0f * transitioner, 1.0f, 1.0f * transitioner, 0.25f + 0.75f * transitioner);
+	colourCorrection = Vector4(
+		colourCorrectionCurrent.x * transitioner, 
+		colourCorrectionCurrent.y, 
+		colourCorrectionCurrent.z * transitioner,
+		0.25f + 0.75f * transitioner);
 	if (transitionTimer < 0 && transitionFlag == 2)
 	{
 		int currentScene = GetSceneType();
