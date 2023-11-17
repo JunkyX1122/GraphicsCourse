@@ -24,6 +24,7 @@ public:
 	 void RenderThings();
 	 void CombineBuffers();
 	 void TransitionCall() { transitionFlag = 2; transitionTimer = 1.0f; }
+	 bool IsTransitioning() { return transitionFlag != 0; }
 	 Camera* GetCamera() { return camera; }
 	
 	 float manualMove = 0.0f;

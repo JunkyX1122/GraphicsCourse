@@ -183,7 +183,7 @@ void Renderer::RenderScene()
 void Renderer::Transition(float dt)
 {
 	transitionTimer -= dt;
-	float transitioner = abs(transitionTimer);
+	float transitioner = sin(PI/2 * abs(transitionTimer));
 	pixelSize = round(1 + 50 - 50 * transitioner);
 	colourCorrection = Vector4(1.0f * transitioner, 1.0f, 1.0f * transitioner, 0.25f + 0.75f * transitioner);
 	if (transitionTimer < 0 && transitionFlag == 2)

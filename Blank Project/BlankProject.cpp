@@ -21,7 +21,7 @@ int main()	{
 	
 	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE))
 	{
-		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RETURN))
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RETURN) && !renderer.IsTransitioning())
 		{
 			renderer.TransitionCall();
 		}

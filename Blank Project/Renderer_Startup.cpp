@@ -358,8 +358,13 @@ bool Renderer::SetUpCamera()
 	cameraFOV = 90.0f;
 	cameraTimer = 0.0f;
 	cameraOrbitTimer = 0.0f;
-	cameraAutoMoveType = 1;
-	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
+	cameraAutoMoveType = 0;
+
+	camera = new Camera(-45.0f, 0.0f, Vector3(24174.8f, 3312.67f, 7907.53f));
+
+	storedCamPosition[1] = Vector3(50000.0f + 1500.0f,0,0);
+	storedCamRotation[1] = Vector3(0,90.0f,0);
+
 	camera->LockFreeMovement();
 
 	AddCameraKeyFrame(Vector3(24174.8f, 3312.67f, 7907.53f), Vector3(-3.28f , 165.19f , 0.0f		)); // 0

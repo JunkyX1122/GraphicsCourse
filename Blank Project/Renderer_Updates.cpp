@@ -124,26 +124,32 @@ void Renderer::UpdateCameraMovementSpace(float dt)
 
 void Renderer::UpdateNodes(float dt)
 {
-	planetSurfaceRoot->Update(dt);
-
-
-	spaceRoot->		SetTransform(spaceRoot->		GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
-	planet->		SetTransform(planet->			GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1))); 
-	asteroidParent->SetTransform(asteroidParent->	GetTransform() * Matrix4::Rotation(-dt * 8.0f, Vector3(0, 1, 0)));
-	sun->			SetTransform(sun->				GetTransform() * Matrix4::Rotation(-dt * 4.0f, Vector3(0, 0, 1)));
-
-	for (int i = 0; i < asteroidParent->GetChildCount(); i++)
+	switch (GetSceneType())
 	{
-		SceneNode* s = asteroidParent->GetChild(i);
-		s->SetTransform
-		(
-			s->GetTransform()
-			* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().x, Vector3(1, 0, 0))
-			* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().y, Vector3(0, 1, 0))
-			* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().z, Vector3(0, 0, 1))
-		);
+	case(0):
+		planetSurfaceRoot->Update(dt);
+		break;
+
+	case(1):
+		spaceRoot->SetTransform(spaceRoot->GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
+		planet->SetTransform(planet->GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1)));
+		asteroidParent->SetTransform(asteroidParent->GetTransform() * Matrix4::Rotation(-dt * 8.0f, Vector3(0, 1, 0)));
+		sun->SetTransform(sun->GetTransform() * Matrix4::Rotation(-dt * 4.0f, Vector3(0, 0, 1)));
+
+		for (int i = 0; i < asteroidParent->GetChildCount(); i++)
+		{
+			SceneNode* s = asteroidParent->GetChild(i);
+			s->SetTransform
+			(
+				s->GetTransform()
+				* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().x, Vector3(1, 0, 0))
+				* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().y, Vector3(0, 1, 0))
+				* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().z, Vector3(0, 0, 1))
+			);
+		}
+		spaceRoot->Update(dt);
+		break;
 	}
-	spaceRoot->Update(dt);
 }
 
 float Renderer::naive_lerp(float a, float b, float t)
