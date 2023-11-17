@@ -24,9 +24,11 @@ public:
 		mesh = m;
 		texture = tex;
 		bump = b;
+		localRotationSpeed = Vector3(0, 0, 0);
 	}
 
-	void SetTransform(const Matrix4 &matrix)		  { transform = matrix; }
+	void SetTransform(const Matrix4& matrix) { transform = matrix; }
+	void SetWorldTransform(const Matrix4& matrix) { worldTransform = matrix; }
 	const Matrix4& GetTransform()				const { return transform; }
 	Matrix4 GetWorldTransform()					const { return worldTransform; }
 
@@ -38,6 +40,9 @@ public:
 
 	Mesh* GetMesh() const { return mesh; }
 	void SetMesh(Mesh* m) { mesh = m; }
+
+	Vector3 GetRotationSpeed() const { return localRotationSpeed; }
+	void SetRotationSpeed(Vector3 s) { localRotationSpeed = s; }
 
 	void AddChild(SceneNode* s);
 
@@ -65,6 +70,8 @@ public:
 	int GetLightingInfluence() { return lightingInfluence; }
 	void SetLightingInfluence(int b) { lightingInfluence = b; }
 
+
+
 	static bool CompareByCameraDistance(SceneNode* a, SceneNode* b)
 	{
 		return (a->distanceFromCamera < b->distanceFromCamera) ? true : false;
@@ -79,6 +86,8 @@ public:
 		return children.end();
 	}
 
+	int GetChildCount() { return children.size(); }
+	SceneNode* GetChild(int i) { return children[i]; }
 	
 	
 protected:
@@ -95,6 +104,7 @@ protected:
 	GLuint texture;
 	GLuint texture2;
 	GLuint bump;
+	Vector3 localRotationSpeed;
 
 	int tag = SCENENODETAG_NULL;
 	int lightingInfluence = 1;

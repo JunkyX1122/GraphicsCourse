@@ -15,6 +15,7 @@ bool Renderer::ManageSpaceSceneNodes()
 
 	if (!SetUpMainPlanet()) return false;
 	if (!SetUpSun()) return false;
+	if (!SetUpAsteroids()) return false;
 	return true;
 }
 

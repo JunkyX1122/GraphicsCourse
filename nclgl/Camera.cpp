@@ -70,13 +70,17 @@ void Camera::UpdateCamera(float dt)
 		{
 			rotationsSetter.z -= 0.5f;
 		}
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_E))
+		{
+			//rotationsSetter.z -= 0.5f;
+		}
 	}
 	float dampenCam = 0.01f;
 	float dampenRot = 0.01f;
 	if (GetFreeMove()) 
 	{
-		dampenCam = 0.5f;
-		dampenRot = 0.5f;
+		dampenCam = 0.75f;
+		dampenRot = 0.75f;
 	}
 	position = position * (1.0f - dampenCam) + positionSetter * dampenCam;
 	pitch = pitch * (1.0f - dampenRot) + rotationsSetter.x * dampenRot;

@@ -257,12 +257,13 @@ bool Renderer::SetUpMainPlanet()
 	if (!planetBump) return false;
 	planet = new SceneNode();
 	planet->SetBoundingRadius(1000.0f);
+	planet->SetTransform(Matrix4::Translation(Vector3(50000.0f, 0, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
 	planet->SetModelScale(Vector3(1000.0f, 1000.0f, 1000.0f));
 	planet->SetMesh(planetModel);
 	planet->SetTexture(planetTexture);
 	planet->SetTexture2(planetCloudTexture);
 	planet->SetBump(planetBump);
-	planet->SetTransform(Matrix4::Translation(Vector3(50000.0f, 1000.0f, 0)) * Matrix4::Rotation(90, Vector3(1, 0, 0)));
+	
 	planetCycle = 0.0f;
 	planet->SetTag(SCENENODETAG_PLANET);
 	spaceRoot->AddChild(planet);
@@ -290,32 +291,101 @@ bool Renderer::SetUpSun()
 	return true;
 }
 
-void Renderer::SetUpCameraKeyFrames()
+bool Renderer::SetUpAsteroids()
 {
-	AddCameraKeyFrame(Vector3(24174.8, 3312.67, 7907.53), Vector3(-3.28, 165.19, 0)); // 0
-	AddCameraKeyFrame(Vector3(25776.7, 2967.56, 11433.8), Vector3(5.26, 225.95, -5));
-	AddCameraKeyFrame(Vector3(27447.6, 2021.92, 14204.2), Vector3(12.26, 133.829, 2.5));
-	AddCameraKeyFrame(Vector3(27666.3, 2757.5, 16105.7), Vector3(-2.37, 69.919, 20.5));
-	AddCameraKeyFrame(Vector3(25303.6, 3402.68, 20467.8), Vector3(-16.72, 47.219, 8.5));
-	AddCameraKeyFrame(Vector3(25389, 4724.11, 22105.6), Vector3(-18.68, 57.0393, 0));
-	AddCameraKeyFrame(Vector3(23345.5, 3042.83, 25329.4), Vector3(19.68, 56.3394, -2.5));
+	asteroidParent = new SceneNode();
+	spaceRoot->AddChild(asteroidParent);
+	asteroidModel1 = Mesh::LoadFromMeshFile("Rock_02_LOD0 .msh");
+	asteroidTexture1 = SOIL_load_OGL_texture(TEXTUREDIR"Asteroids.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	asteroidBump1 = SOIL_load_OGL_texture(TEXTUREDIR"Asteroids_Bump.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
-	AddCameraKeyFrame(Vector3(20325, 5024.69, 25561.1), Vector3(-27.57, 89.0293, 7));
-	AddCameraKeyFrame(Vector3(14930.9, 1841.56, 28449.7), Vector3(-21.62, 40.7293, -16.5));
-	AddCameraKeyFrame(Vector3(10220, 1841.56, 26711.1), Vector3(15.13, -24.4407, -21));
+	SetTextureRepeating(asteroidTexture1, true);
+	SetTextureRepeating(asteroidBump1, true);
 
-	AddCameraKeyFrame(Vector3(6408.33, 1841.56, 23910.8), Vector3(-7.9, 33.5193, 10.5));
-	AddCameraKeyFrame(Vector3(3531.42, 3057.34, 17650.9), Vector3(-40.17, -53.7707, 3));
-	AddCameraKeyFrame(Vector3(14926.6, 1826.32, 2392.37), Vector3(-15.67, -70.3608, 0));
-	AddCameraKeyFrame(Vector3(20294.2, 7576.22, 4030.8), Vector3(-45.7, -194.401, 0));
-	AddCameraKeyFrame(Vector3(22057.7, 13146.3, 14489.4), Vector3(-69.57, -250.401, 0));
+	if (!asteroidModel1) return false;
+	if (!asteroidTexture1) return false;
+	if (!asteroidBump1) return false;
+
+	const int perRotation = 50;
+
+	int lbR = 0, ubR = 360;
+
+	float scaleVectors[3];
+	float lowerBounds[3] = { 100, 100, 100 };
+	float upperBounds[3] = { 200, 200, 200 };
+
+
+	for (int i = 0; i < perRotation; i++)
+	{
+		float randDev = 0.4f + (0.6f - 0.4f) * (((float)rand()) / (float)RAND_MAX);
+		float distance = 50000.0f * randDev;
+		float angle = (2 * PI) / perRotation * i;
+		float anglePitch = (PI * 0.5f) * (0.1f - 0.2 * (((float)rand()) / (float)RAND_MAX));
+		float x = distance * cos(angle) * cos(anglePitch);
+		float y = distance * sin(anglePitch);
+		float z = distance * sin(angle) * cos(anglePitch);
+		float rotationX = (float)((rand() % (lbR - ubR + 1)) + lbR);
+		float rotationY = (float)((rand() % (lbR - ubR + 1)) + lbR);
+
+		for (int t = 0; t < 3; t++)
+		{
+			float lbS = lowerBounds[t];
+			float ubS = upperBounds[t];
+			scaleVectors[t] = lbS + (ubS - lbS) * (((float)rand()) / (float)RAND_MAX);
+		}
+
+		SceneNode* s = new SceneNode
+		(
+			Matrix4::Translation(Vector3((float)x, (float)y, (float)z)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
+			Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
+			700.0f,
+			rockModel1,
+			rockTexture1,
+			rockBump1
+		);
+		Vector3 rotSpd = Vector3(1 - 2 * (((float)rand()) / (float)RAND_MAX), 1 - 2 * (((float)rand()) / (float)RAND_MAX), 1 - 2 * (((float)rand()) / (float)RAND_MAX));
+		s->SetRotationSpeed(rotSpd);
+		s->SetColour(Vector4(1, 1, 1, 1));
+		asteroidParent->AddChild(s);	
+	}
+	return true;
+}
+
+
+
+bool Renderer::SetUpCamera()
+{
+	cameraFOV = 90.0f;
+	cameraTimer = 0.0f;
+	cameraOrbitTimer = 0.0f;
+	cameraAutoMoveType = 0;
+	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
+	camera->LockFreeMovement();
+
+	AddCameraKeyFrame(Vector3(24174.8f, 3312.67f, 7907.53f), Vector3(-3.28f , 165.19f , 0.0f		)); // 0
+	AddCameraKeyFrame(Vector3(25776.7f, 2967.56f, 11433.8f), Vector3(5.26f  , 225.95f , -5.0f		));
+	AddCameraKeyFrame(Vector3(27447.6f, 2021.92f, 14204.2f), Vector3(12.26f , 133.829f, 2.5f		));
+	AddCameraKeyFrame(Vector3(27666.3f, 2757.5f , 16105.7f), Vector3(-2.37f , 69.919f , 20.5		));
+	AddCameraKeyFrame(Vector3(25303.6f, 3402.68f, 20467.8f), Vector3(-16.72f, 47.219f , 8.5f		));
+	AddCameraKeyFrame(Vector3(25389.0f, 4724.11f, 22105.6f), Vector3(-18.68f, 57.0393f, 0.0f		));
+	AddCameraKeyFrame(Vector3(23345.5f, 3042.83f, 25329.4f), Vector3(19.68f , 56.3394f, -2.5f		));
+
+	AddCameraKeyFrame(Vector3(20325.0f, 5024.69f, 25561.1f), Vector3(-27.57f, 89.0293f , 7.0f		));
+	AddCameraKeyFrame(Vector3(14930.9f, 1841.56f, 28449.7f), Vector3(-21.62f, 40.7293f , -16.5f		));
+	AddCameraKeyFrame(Vector3(10220.0f, 1841.56f, 26711.1f), Vector3(15.13f , -24.4407f, -21.0f		));
+
+	AddCameraKeyFrame(Vector3(6408.33f, 1841.56f, 23910.8f), Vector3(-7.9f  , 33.5193f , 10.5f		));
+	AddCameraKeyFrame(Vector3(3531.42f, 3057.34f, 17650.9f), Vector3(-40.17f, -53.7707f, 3.0f		));
+	AddCameraKeyFrame(Vector3(14926.6f, 1826.32f, 2392.37f), Vector3(-15.67f, -70.3608f, 0.0f		));
+	AddCameraKeyFrame(Vector3(20294.2f, 7576.22f, 4030.8f ), Vector3(-45.7f , -194.401f, 0.0f		));
+	AddCameraKeyFrame(Vector3(22057.7f, 13146.3f, 14489.4f), Vector3(-69.57f, -250.401f, 0.0f		));
 	//AddCameraKeyFrame(Vector3(), Vector3());
 	//AddCameraKeyFrame(Vector3(), Vector3());
 
 	cameraKeyFrameCount_Planet = cameraPositions_Planet.size();
 	currentKeyFrame = 0;
-	cameraAnimateSpeed = 1 / 8;
-
+	cameraAnimateSpeed = 1.0f / 8.0f;
+	return true;
 }
 void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot)
 {

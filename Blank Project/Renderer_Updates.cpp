@@ -14,11 +14,28 @@ void Renderer::UpdatePointLights(float dt)
 
 void Renderer::UpdateCameraControls()
 {
+	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SHIFT))
+	{
+		cameraAutoMoveType = (cameraAutoMoveType + 1) % 2;
+	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_PLUS))
+	{
+		cameraFOV += 0.2f;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_MINUS))
+	{
+		cameraFOV -= 0.2f;
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_0))
+	{
+		cameraFOV = 90.0f;
+		camera->SetRotationSetter(Vector3(0.0f,0.0f,0.0f));
+	}
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_UP))
 	{
 		cameraAnimateSpeed += 0.001f;
 	}
-	if (Window::GetKeyboard()->KeyDown(KEYBOARD_MINUS))
+	if (Window::GetKeyboard()->KeyDown(KEYBOARD_DOWN))
 	{
 		cameraAnimateSpeed -= 0.001f;
 	}
@@ -51,7 +68,7 @@ void Renderer::UpdateCameraControls()
 	}
 }
 
-void Renderer::UpdateCameraMovement(float dt)
+void Renderer::UpdateCameraMovementPlanet(float dt)
 {
 	cameraTimer += dt * cameraAnimateSpeed;
 	if (cameraTimer > 1)
@@ -86,11 +103,46 @@ void Renderer::UpdateCameraMovement(float dt)
 	camera->SetRotationSetter(rotTrans);
 }
 
+void Renderer::UpdateCameraMovementSpace(float dt)
+{
+	cameraOrbitTimer += dt * -5.0f;
+	Vector3 planetTransform = (spaceRoot->GetTransform() * Matrix4::Translation(Vector3(50000.0f,0.0f, 1500.0f))).GetPositionVector();
+	Vector3 origin[2] = {Vector3(planetTransform.x, planetTransform.y, planetTransform.z), Vector3(0,0,0)};
+	float distance[2] = { 2000.0f, 35000.0f };
+	float angle = cameraOrbitTimer;
+	float angleRad = angle * (PI / 180);
+	float anglePitch = 20.0f * (PI / 180);
+	float x = origin[cameraAutoMoveType].x + distance[cameraAutoMoveType] * cos(angleRad) * cos(anglePitch);
+	float y = origin[cameraAutoMoveType].y + distance[cameraAutoMoveType] * sin(anglePitch);
+	float z = origin[cameraAutoMoveType].z + distance[cameraAutoMoveType] * sin(angleRad) * cos(anglePitch);
+	camera->SetPositionSetter
+	(
+		Vector3 (x, y, z )
+	);
+	camera->SetRotationSetter(Vector3(-20.0f, -angle + 90.0f, 0.0f));
+}
+
 void Renderer::UpdateNodes(float dt)
 {
 	planetSurfaceRoot->Update(dt);
-	spaceRoot->SetTransform(spaceRoot->GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
-	planet->SetTransform(planet->GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1)));
+
+
+	spaceRoot->		SetTransform(spaceRoot->		GetTransform() * Matrix4::Rotation(-dt * 1.0f, Vector3(0, 1, 0)));
+	planet->		SetTransform(planet->			GetTransform() * Matrix4::Rotation(-dt * 2.0f, Vector3(0, 0, 1))); 
+	asteroidParent->SetTransform(asteroidParent->	GetTransform() * Matrix4::Rotation(-dt * 8.0f, Vector3(0, 1, 0)));
+	sun->			SetTransform(sun->				GetTransform() * Matrix4::Rotation(-dt * 4.0f, Vector3(0, 0, 1)));
+
+	for (int i = 0; i < asteroidParent->GetChildCount(); i++)
+	{
+		SceneNode* s = asteroidParent->GetChild(i);
+		s->SetTransform
+		(
+			s->GetTransform()
+			* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().x, Vector3(1, 0, 0))
+			* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().y, Vector3(0, 1, 0))
+			* Matrix4::Rotation(dt * 69.0f * s->GetRotationSpeed().z, Vector3(0, 0, 1))
+		);
+	}
 	spaceRoot->Update(dt);
 }
 

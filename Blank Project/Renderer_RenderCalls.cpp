@@ -8,6 +8,7 @@ void Renderer::RenderThings()
 	case(0):
 		globalSceneLight->SetPosition(heightMapSize * Vector3(0.5f, 3.0f, 0.5f) + Vector3(-5000.0f,0,0));
 		globalSceneLight->SetRadius(80000.0f);
+		globalSceneLight->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 		DrawTerrain();
 		BuildNodeLists(planetSurfaceRoot);
 		SortNodeLists();
@@ -17,6 +18,7 @@ void Renderer::RenderThings()
 	case(1):
 		globalSceneLight->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
 		globalSceneLight->SetRadius(80000.0f);
+		globalSceneLight->SetColour(Vector4(1.0f, 0.85f, 0.45f, 1.0f));
 		BuildNodeLists(spaceRoot);
 		SortNodeLists();
 		DrawNodes();

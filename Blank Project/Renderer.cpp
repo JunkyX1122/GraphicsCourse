@@ -8,25 +8,13 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	skyBox = Mesh::GenerateQuad();
 	waterQuad = Mesh::GenerateQuad();
 	
-	
 	if (!sphere) return;
-
-	//========================================================================
-	
 	if (!SetUpTerrain()) return;
-	
 	if (!SetUpWater()) return;
-
 	if (!SetUpSkybox()) return;
-	//========================================================================
-	cameraTimer = 0.0f;
-	cameraAutoMoveType = 0;
-	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
-	camera->LockFreeMovement();
+	if (!SetUpCamera()) return;
+
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.0f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
-	SetUpCameraKeyFrames();
-	//========================================================================
-	
 	planetSurfaceRoot = new SceneNode();
 	spaceRoot = new SceneNode();
 	spaceRoot->SetTransform(Matrix4::Translation(Vector3(0, 0, 0)));
@@ -34,10 +22,8 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	if (!ManagePlanetSurfaceSceneNodes()) return;
 	if (!CreateBuffers()) return;
 	if (!ManageSpaceSceneNodes()) return;
-
-	//========================================================================
 	if (!SetUpPointLights()) return;
-	//========================================================================
+
 
 	basicShader = new Shader("sceneVertex.glsl", "sceneFragment.glsl");
 	modelShader = new Shader("bumpVertex.glsl", "bumpFragment.glsl");
@@ -143,12 +129,24 @@ Renderer::~Renderer(void)
 void Renderer::UpdateScene(float dt) 
 {
 	UpdateCameraControls();
-	if(!camera->GetFreeMove()) UpdateCameraMovement(dt);
+	if (!camera->GetFreeMove())
+	{
+		switch(GetSceneType())
+		{
+		case(0):
+			UpdateCameraMovementPlanet(dt);
+			break;
+		case(1):
+			UpdateCameraMovementSpace(dt);
+			break;
+		}
+		
+	}
 	camera->UpdateCamera(dt);
 
 
 	viewMatrix = camera->BuildViewMatrix();
-	projMatrix = Matrix4::Perspective(1.0f, 90000.0f, (float)width / (float)height, 90.0f);
+	projMatrix = Matrix4::Perspective(1.0f, 90000.0f, (float)width / (float)height, cameraFOV);
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 
 	waterRotate += dt * 2.0f;

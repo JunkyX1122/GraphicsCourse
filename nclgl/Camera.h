@@ -41,6 +41,9 @@ public:
 	float GetRoll() const { return roll; }
 	void SetRoll(float val) { roll = val; }
 
+	Vector3 GetRotation() const { return Vector3(pitch, yaw, roll); }
+	void SetRotation(Vector3 val) { pitch = val.x; yaw = val.y; roll = val.z; }
+
 	Vector3 GetRotationSetter() const { return rotationsSetter; }
 	void SetRotationSetter(Vector3 val) { rotationsSetter = val; }
 

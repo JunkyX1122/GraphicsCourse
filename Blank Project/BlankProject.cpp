@@ -3,7 +3,8 @@
 
 int main()	{
 	//Window w("Make your own project!", 1280, 720, false);
-	Window w("Make your own project!", 1920, 1080, true);
+	Window w("Make your own project!", 1600, 900, false);
+	//Window w("Make your own project!", 1920, 1080, true);
 
 	if(!w.HasInitialised()) {
 		return -1;
@@ -17,13 +18,23 @@ int main()	{
 	w.LockMouseToWindow(true);
 	w.ShowOSPointer(false);
 
+	Vector3 storedCamPosition[2];
+	Vector3 storedCamRotation[2];
 	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE))
 	{
-		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_0))
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RETURN))
 		{
-			renderer.SetSceneType(renderer.GetSceneType() == 0 ? 1 : 0);
-			if (renderer.GetSceneType() == 0) renderer.GetCamera()->LockFreeMovement();
-			if (renderer.GetSceneType() == 1) renderer.GetCamera()->UnlockFreeMovement();
+			int currentScene = renderer.GetSceneType();
+			int nextScene = (currentScene + 1) % 2;
+			storedCamPosition[currentScene] = renderer.GetCamera()->GetPosition();
+			storedCamRotation[currentScene] = renderer.GetCamera()->GetRotation();
+
+			renderer.GetCamera()->SetPosition(storedCamPosition[nextScene]);
+			renderer.GetCamera()->SetRotation(storedCamRotation[nextScene]);
+			renderer.GetCamera()->SetPositionSetter(storedCamPosition[nextScene]);
+			renderer.GetCamera()->SetRotationSetter(storedCamRotation[nextScene]);
+			renderer.SetSceneType(currentScene == 0 ? 1 : 0);
+			
 
 		}
 		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());

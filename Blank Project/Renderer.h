@@ -33,15 +33,18 @@ protected:
 	Camera* camera;
 	int cameraAutoMoveType;
 	float cameraTimer;
+	float cameraOrbitTimer;
 	vector<Vector3> cameraPositions_Planet;
 	vector<Vector3> cameraRotations_Planet;
 	int cameraKeyFrameCount_Planet;
 	int currentKeyFrame;
 	float cameraAnimateSpeed;
-	void SetUpCameraKeyFrames();
+	float cameraFOV;
+	bool SetUpCamera();
 	void AddCameraKeyFrame(Vector3 pos, Vector3 rot);
 	void UpdateCameraControls();
-	void UpdateCameraMovement(float dt);
+	void UpdateCameraMovementPlanet(float dt);
+	void UpdateCameraMovementSpace(float dt);
 	float naive_lerp(float a, float b, float t);
 
 	SceneNode* planetSurfaceRoot;
@@ -63,6 +66,12 @@ protected:
 	GLuint rockTexture1;
 	GLuint rockBump1;
 	bool SetUpRocks();
+
+	Mesh* asteroidModel1;
+	GLuint asteroidTexture1;
+	GLuint asteroidBump1;
+	SceneNode* asteroidParent;
+	bool SetUpAsteroids();
 
 	Mesh* crystalModel1;
 	GLuint crystalTexture1;
