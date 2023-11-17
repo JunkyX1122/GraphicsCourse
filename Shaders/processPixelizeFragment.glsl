@@ -2,11 +2,10 @@
 
 uniform sampler2D sceneTex;
 
-uniform int isVertical;
-uniform int bloomRange;
-uniform float bloomIntensity;
 uniform vec2 screenSize;
 uniform float pixelSize;
+uniform vec4 colourCorrection;
+
 in Vertex
 {
 	vec2 texCoord;
@@ -24,6 +23,7 @@ void main(void)
 	vec4 tmp = texture2D(sceneTex, newUV);
 
 	fragColor = tmp;
+	fragColor = fragColor * colourCorrection;
 	
 }
 

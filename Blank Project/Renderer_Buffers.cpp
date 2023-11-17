@@ -59,6 +59,7 @@ bool Renderer::CreateBuffers()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	pixelSize = 1;
+	colourCorrection = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	return true;
 }
 
@@ -131,7 +132,7 @@ void Renderer::DrawPointLights()
 
 	glDepthMask(GL_TRUE);
 
-	glClearColor(0.2f, 0.2f, 0.2f, 1);
+	glClearColor(emptyColour.x, emptyColour.y, emptyColour.z, emptyColour.w);
 	//glClearColor(1.0f,1.0f,1.0f, 1);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -242,6 +243,7 @@ void Renderer::DrawPostProcess()
 
 	glUniform1i(glGetUniformLocation(processShaderPixelize->GetProgram(), "sceneTexBase"), 0);
 	glUniform2fv(glGetUniformLocation(processShaderPixelize->GetProgram(), "screenSize"), 1, (float*)&screenSize);
+	glUniform4fv(glGetUniformLocation(processShaderPixelize->GetProgram(), "colourCorrection"), 1, (float*)&colourCorrection);
 	glUniform1f(glGetUniformLocation(processShaderPixelize->GetProgram(), "pixelSize"), pixelSize);
 	
 	quad->Draw();

@@ -28,6 +28,7 @@ public:
 	
 	 float manualMove = 0.0f;
 protected:
+	Vector4 emptyColour;
 	int renderSceneType;
 	int transitionFlag;
 	float transitionTimer;
@@ -164,6 +165,7 @@ protected:
 	Shader* processShaderPixelize;
 	float pixelSize;
 	Vector2 screenSize;
+	Vector4 colourCorrection;
 
 	Mesh*	triangle;
 	Shader* basicShader;

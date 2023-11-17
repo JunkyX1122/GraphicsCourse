@@ -2,6 +2,7 @@
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	
 {
+	emptyColour = Vector4(0, 0, 0, 1);
 	screenSize = parent.GetScreenSize();
 	renderSceneType = 0;
 	transitionFlag = 0;
@@ -168,8 +169,7 @@ void Renderer::UpdateScene(float dt)
 
 void Renderer::RenderScene()	
 {
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	//glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(emptyColour.x, emptyColour.y, emptyColour.z, emptyColour.w);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 
@@ -183,7 +183,9 @@ void Renderer::RenderScene()
 void Renderer::Transition(float dt)
 {
 	transitionTimer -= dt;
-	pixelSize = 1 + 50 - 50 * abs(transitionTimer);
+	float transitioner = abs(transitionTimer);
+	pixelSize = round(1 + 50 - 50 * transitioner);
+	colourCorrection = Vector4(1.0f * transitioner, 1.0f, 1.0f * transitioner, 0.25f + 0.75f * transitioner);
 	if (transitionTimer < 0 && transitionFlag == 2)
 	{
 		int currentScene = GetSceneType();
@@ -202,6 +204,7 @@ void Renderer::Transition(float dt)
 	if (transitionTimer < -1)
 	{
 		pixelSize = 1.0f;
+		colourCorrection = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		transitionTimer = 1.0f;
 		transitionFlag = 0;
 	}

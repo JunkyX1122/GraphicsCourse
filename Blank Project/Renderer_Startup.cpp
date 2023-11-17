@@ -358,7 +358,7 @@ bool Renderer::SetUpCamera()
 	cameraFOV = 90.0f;
 	cameraTimer = 0.0f;
 	cameraOrbitTimer = 0.0f;
-	cameraAutoMoveType = 0;
+	cameraAutoMoveType = 1;
 	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
 	camera->LockFreeMovement();
 
