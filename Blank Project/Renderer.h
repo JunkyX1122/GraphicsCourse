@@ -23,12 +23,18 @@ public:
 	 void FillBuffers();
 	 void RenderThings();
 	 void CombineBuffers();
-
+	 void TransitionCall() { transitionFlag = 2; transitionTimer = 1.0f; }
 	 Camera* GetCamera() { return camera; }
-
+	
 	 float manualMove = 0.0f;
 protected:
 	int renderSceneType;
+	int transitionFlag;
+	float transitionTimer;
+	void Transition(float dt);
+	Vector3 storedCamPosition[2];
+	Vector3 storedCamRotation[2];
+	
 
 	Camera* camera;
 	int cameraAutoMoveType;
@@ -151,10 +157,13 @@ protected:
 	void DrawSkybox();
 
 	GLuint processFBO;
+	GLuint processFinalFBO;
 	Shader* processShaderGetBright;
 	Shader* processShaderBlur;
 	Shader* processShaderBloom;
-
+	Shader* processShaderPixelize;
+	float pixelSize;
+	Vector2 screenSize;
 
 	Mesh*	triangle;
 	Shader* basicShader;

@@ -3,6 +3,7 @@
 // HELLO FROM THE OTHER SIDE!
 int main() {	
 	Window w("Post Processing WOO!", 1280, 720,false);
+	
 	if(!w.HasInitialised()) {
 		return -1;
 	}

@@ -18,24 +18,12 @@ int main()	{
 	w.LockMouseToWindow(true);
 	w.ShowOSPointer(false);
 
-	Vector3 storedCamPosition[2];
-	Vector3 storedCamRotation[2];
+	
 	while(w.UpdateWindow()  && !Window::GetKeyboard()->KeyDown(KEYBOARD_ESCAPE))
 	{
 		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RETURN))
 		{
-			int currentScene = renderer.GetSceneType();
-			int nextScene = (currentScene + 1) % 2;
-			storedCamPosition[currentScene] = renderer.GetCamera()->GetPosition();
-			storedCamRotation[currentScene] = renderer.GetCamera()->GetRotation();
-
-			renderer.GetCamera()->SetPosition(storedCamPosition[nextScene]);
-			renderer.GetCamera()->SetRotation(storedCamRotation[nextScene]);
-			renderer.GetCamera()->SetPositionSetter(storedCamPosition[nextScene]);
-			renderer.GetCamera()->SetRotationSetter(storedCamRotation[nextScene]);
-			renderer.SetSceneType(currentScene == 0 ? 1 : 0);
-			
-
+			renderer.TransitionCall();
 		}
 		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());
 		renderer.RenderScene();

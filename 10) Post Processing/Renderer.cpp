@@ -4,16 +4,16 @@ const int POST_PASSES = 10;
 
 Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 {
-	camera = new Camera(-25.0f, 225.0f, Vector3(-150.0f, 250.0f, -150.0f));
+	camera = new Camera(-25.0f, 225.0f, Vector3(-150.0f, 1000.0f, -150.0f));
 	quad = Mesh::GenerateQuad();
 
-	heightMap = new HeightMap(TEXTUREDIR"noise.png", 32.0f, 0);
+	heightMap = new HeightMap(TEXTUREDIR"white.png", 32.0f, 0);
 	heightTexture = SOIL_load_OGL_texture(TEXTUREDIR"brick.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	sceneShader = new Shader("texturedVertex.glsl", "texturedFragment.glsl");
 	processShader = new Shader("texturedVertex.glsl", "processGetBrightFragment.glsl");
 	processShader2 = new Shader("texturedVertex.glsl", "processFragment.glsl");
-	processShader3 = new Shader("texturedVertex.glsl", "processBloomFragment.glsl");
+	processShader3 = new Shader("texturedVertex.glsl", "processPixelizeFragment.glsl");
 
 	if (!processShader->LoadSuccess() || !sceneShader->LoadSuccess() || !heightTexture) return;
 
@@ -73,11 +73,11 @@ void Renderer::UpdateScene(float dt)
 {
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_I))
 	{
-		testValue -= 0.0005f;
+		testValue -= 0.1;
 	}
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_O))
 	{
-		testValue += 0.0005f;
+		testValue += 0.1;
 	}
 
 	if (Window::GetKeyboard()->KeyDown(KEYBOARD_K))
@@ -126,7 +126,7 @@ void Renderer::DrawPostProcess()
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, bufferColourTex[1], 0);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	BindShader(processShader);
+	BindShader(sceneShader);
 	modelMatrix.ToIdentity();
 	viewMatrix.ToIdentity();
 	projMatrix.ToIdentity();
@@ -135,7 +135,7 @@ void Renderer::DrawPostProcess()
 	glDisable(GL_DEPTH_TEST);
 
 	glActiveTexture(GL_TEXTURE0);
-	glUniform1i(glGetUniformLocation(processShader->GetProgram(), "sceneTex"), 0);
+	glUniform1i(glGetUniformLocation(sceneShader->GetProgram(), "sceneTex"), 0);
 
 	for (int i = 0; i < 1; i++)
 	{
@@ -148,7 +148,7 @@ void Renderer::DrawPostProcess()
 
 	
 
-
+	/*
 	BindShader(processShader2);
 	modelMatrix.ToIdentity();
 	viewMatrix.ToIdentity();
@@ -169,6 +169,7 @@ void Renderer::DrawPostProcess()
 		glBindTexture(GL_TEXTURE_2D, bufferColourTex[1 + (i % 2)]);
 		quad->Draw();
 	}
+	*/
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glEnable(GL_DEPTH_TEST);
 }
@@ -185,9 +186,14 @@ void Renderer::PresentScene()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, bufferColourTex[0]);
 	glUniform1i(glGetUniformLocation(processShader3->GetProgram(), "sceneTexBase"), 0);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, bufferColourTex[1]);
-	glUniform1i(glGetUniformLocation(processShader3->GetProgram(), "sceneTex"), 1);
+	glUniform2fv(glGetUniformLocation(processShader3->GetProgram(), "screenSize"), 1, (float*)&Vector2(1280, 720));
+	if (testValue < 1)
+	{
+		testValue = 1;
+	}
+	glUniform1f(glGetUniformLocation(processShader3->GetProgram(), "pixelSize"), testValue);
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, bufferColourTex[1]);
+	//glUniform1i(glGetUniformLocation(processShader3->GetProgram(), "sceneTex"), 1);
 	quad->Draw();
 }

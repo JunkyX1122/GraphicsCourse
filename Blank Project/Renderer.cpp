@@ -2,7 +2,10 @@
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	
 {
+	screenSize = parent.GetScreenSize();
 	renderSceneType = 0;
+	transitionFlag = 0;
+	transitionTimer = 0;
 	quad = Mesh::GenerateQuad();
 	sphere = Mesh::LoadFromMeshFile("Sphere.msh");
 	skyBox = Mesh::GenerateQuad();
@@ -110,6 +113,7 @@ Renderer::~Renderer(void)
 	delete processShaderGetBright;
 	delete processShaderBlur;
 	delete processShaderBloom;
+	delete processShaderPixelize;
 
 	delete camera;
 	delete heightMap;
@@ -128,6 +132,10 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
+	if (transitionFlag > 0)
+	{
+		Renderer::Transition(dt);
+	}
 	UpdateCameraControls();
 	if (!camera->GetFreeMove())
 	{
@@ -172,5 +180,29 @@ void Renderer::RenderScene()
 	DrawPostProcess();
 }
 
+void Renderer::Transition(float dt)
+{
+	transitionTimer -= dt;
+	pixelSize = 1 + 50 - 50 * abs(transitionTimer);
+	if (transitionTimer < 0 && transitionFlag == 2)
+	{
+		int currentScene = GetSceneType();
+		int nextScene = (currentScene + 1) % 2;
+		storedCamPosition[currentScene] = GetCamera()->GetPosition();
+		storedCamRotation[currentScene] = GetCamera()->GetRotation();
 
-
+		GetCamera()->SetPosition(storedCamPosition[nextScene]);
+		GetCamera()->SetRotation(storedCamRotation[nextScene]);
+		GetCamera()->SetPositionSetter(storedCamPosition[nextScene]);
+		GetCamera()->SetRotationSetter(storedCamRotation[nextScene]);
+		SetSceneType(currentScene == 0 ? 1 : 0);
+		transitionFlag = 1;
+		
+	}
+	if (transitionTimer < -1)
+	{
+		pixelSize = 1.0f;
+		transitionTimer = 1.0f;
+		transitionFlag = 0;
+	}
+}
