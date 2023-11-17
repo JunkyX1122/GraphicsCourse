@@ -154,7 +154,7 @@ bool Renderer::SetUpRocks()
 			(
 				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				scaleVectors[1] * 1.3f,
+				1700.0f * 1.3f,
 				rockModel1,
 				rockTexture1,
 				rockBump1
@@ -217,7 +217,7 @@ bool Renderer::SetUpCrystals()
 			(
 				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				1000.0f,
+				1300.0f,
 				crystalModel1,
 				crystalTexture1,
 				crystalBump1
