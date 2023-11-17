@@ -358,45 +358,60 @@ bool Renderer::SetUpAsteroids()
 
 bool Renderer::SetUpCamera()
 {
+	introFlag = false;
+	introTimer = 0.0f;
 	cameraFOV = 90.0f;
 	cameraTimer = 0.0f;
 	cameraOrbitTimer = 0.0f;
 	cameraAutoMoveType = 0;
+	float bpm = 130.0f;
+	float timesig = 4.0f;
+	float barspm = bpm / timesig;
+	timePerBar = 60.0f / barspm;
+	
+	// 60bpm = 1bps
+	// 120bpm = 2bps
+	// 130bpm = 2.1667bps
+	
 
 	camera = new Camera(-45.0f, 0.0f, Vector3(24174.8f, 3312.67f, 7907.53f));
-
+	camera->SetRotation(Vector3(-3.28f, 165.19f, 0.0f));
+	camera->SetRotationSetter(Vector3(-3.28f, 165.19f, 0.0f));
 	storedCamPosition[1] = Vector3(50000.0f + 1500.0f,0,0);
 	storedCamRotation[1] = Vector3(0,90.0f,0);
 
 	camera->LockFreeMovement();
+	
+	float waitBars = 4.0f;
+	float defaultTime = waitBars * timePerBar;
+	AddCameraKeyFrame(Vector3(24174.8f, 3312.67f, 7907.53f), Vector3(-3.28f , 165.19f , 0.0f		), defaultTime); // 0
+	AddCameraKeyFrame(Vector3(25776.7f, 2967.56f, 11433.8f), Vector3(5.26f  , 225.95f , -5.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(27447.6f, 2021.92f, 14204.2f), Vector3(12.26f , 133.829f, 2.5f		), defaultTime);
+	AddCameraKeyFrame(Vector3(27666.3f, 2757.5f , 16105.7f), Vector3(-2.37f , 69.919f , 20.5		), defaultTime);
+	AddCameraKeyFrame(Vector3(25303.6f, 3402.68f, 20467.8f), Vector3(-16.72f, 47.219f , 8.5f		), defaultTime);
+	AddCameraKeyFrame(Vector3(25389.0f, 4724.11f, 22105.6f), Vector3(-18.68f, 57.0393f, 0.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(23345.5f, 3042.83f, 25329.4f), Vector3(19.68f , 56.3394f, -2.5f		), defaultTime);
 
-	AddCameraKeyFrame(Vector3(24174.8f, 3312.67f, 7907.53f), Vector3(-3.28f , 165.19f , 0.0f		)); // 0
-	AddCameraKeyFrame(Vector3(25776.7f, 2967.56f, 11433.8f), Vector3(5.26f  , 225.95f , -5.0f		));
-	AddCameraKeyFrame(Vector3(27447.6f, 2021.92f, 14204.2f), Vector3(12.26f , 133.829f, 2.5f		));
-	AddCameraKeyFrame(Vector3(27666.3f, 2757.5f , 16105.7f), Vector3(-2.37f , 69.919f , 20.5		));
-	AddCameraKeyFrame(Vector3(25303.6f, 3402.68f, 20467.8f), Vector3(-16.72f, 47.219f , 8.5f		));
-	AddCameraKeyFrame(Vector3(25389.0f, 4724.11f, 22105.6f), Vector3(-18.68f, 57.0393f, 0.0f		));
-	AddCameraKeyFrame(Vector3(23345.5f, 3042.83f, 25329.4f), Vector3(19.68f , 56.3394f, -2.5f		));
+	AddCameraKeyFrame(Vector3(20325.0f, 5024.69f, 25561.1f), Vector3(-27.57f, 89.0293f , 7.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(14930.9f, 1841.56f, 28449.7f), Vector3(-21.62f, 40.7293f , -16.5f		), defaultTime);
+	AddCameraKeyFrame(Vector3(10220.0f, 1841.56f, 26711.1f), Vector3(15.13f , -24.4407f, -21.0f		), defaultTime);
 
-	AddCameraKeyFrame(Vector3(20325.0f, 5024.69f, 25561.1f), Vector3(-27.57f, 89.0293f , 7.0f		));
-	AddCameraKeyFrame(Vector3(14930.9f, 1841.56f, 28449.7f), Vector3(-21.62f, 40.7293f , -16.5f		));
-	AddCameraKeyFrame(Vector3(10220.0f, 1841.56f, 26711.1f), Vector3(15.13f , -24.4407f, -21.0f		));
-
-	AddCameraKeyFrame(Vector3(6408.33f, 1841.56f, 23910.8f), Vector3(-7.9f  , 33.5193f , 10.5f		));
-	AddCameraKeyFrame(Vector3(3531.42f, 3057.34f, 17650.9f), Vector3(-40.17f, -53.7707f, 3.0f		));
-	AddCameraKeyFrame(Vector3(14926.6f, 1826.32f, 2392.37f), Vector3(-15.67f, -70.3608f, 0.0f		));
-	AddCameraKeyFrame(Vector3(20294.2f, 7576.22f, 4030.8f ), Vector3(-45.7f , -194.401f, 0.0f		));
-	AddCameraKeyFrame(Vector3(22057.7f, 13146.3f, 14489.4f), Vector3(-69.57f, -250.401f, 0.0f		));
+	AddCameraKeyFrame(Vector3(6408.33f, 1841.56f, 23910.8f), Vector3(-7.9f  , 33.5193f , 10.5f		), defaultTime);
+	AddCameraKeyFrame(Vector3(3531.42f, 3057.34f, 17650.9f), Vector3(-40.17f, -53.7707f, 3.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(14926.6f, 1826.32f, 2392.37f), Vector3(-15.67f, -70.3608f, 0.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(20294.2f, 7576.22f, 4030.8f ), Vector3(-45.7f , -194.401f, 0.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(22057.7f, 13146.3f, 14489.4f), Vector3(-69.57f, -250.401f, 0.0f		), defaultTime);
 	//AddCameraKeyFrame(Vector3(), Vector3());
 	//AddCameraKeyFrame(Vector3(), Vector3());
 
 	cameraKeyFrameCount_Planet = cameraPositions_Planet.size();
 	currentKeyFrame = 0;
-	cameraAnimateSpeed = 1.0f / 8.0f;
+	cameraAnimateSpeed = 0.0f;
 	return true;
 }
-void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot)
+void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot, float timeToReach)
 {
 	cameraPositions_Planet.push_back(pos);
 	cameraRotations_Planet.push_back(rot);
+	cameraKeyTimes_Planet.push_back(timeToReach);
 }

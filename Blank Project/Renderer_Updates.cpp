@@ -42,11 +42,11 @@ void Renderer::UpdateCameraControls()
 
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_RIGHT))
 	{
-		cameraAnimateSpeed = 1.0f / 8.0f;
+		cameraAnimateSpeed = 1.0f;
 	}
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_LEFT))
 	{
-		cameraAnimateSpeed = -1.0f / 8.0f;
+		cameraAnimateSpeed = -1.0f;
 	}
 	if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_M))
 	{
@@ -70,19 +70,22 @@ void Renderer::UpdateCameraControls()
 
 void Renderer::UpdateCameraMovementPlanet(float dt)
 {
-	cameraTimer += dt * cameraAnimateSpeed;
+	int nextKeyFrame = currentKeyFrame + (cameraAnimateSpeed >= 0 ? 1 : -1);
+	if (nextKeyFrame < 0) nextKeyFrame = cameraKeyFrameCount_Planet - 1;
+	if (nextKeyFrame > cameraKeyFrameCount_Planet - 1) nextKeyFrame = 0;
+
+	cameraTimer += dt * cameraAnimateSpeed / cameraKeyTimes_Planet[nextKeyFrame];
 	if (cameraTimer > 1)
 	{
 		cameraTimer = 0;
-		currentKeyFrame = (currentKeyFrame + 1) % cameraKeyFrameCount_Planet;
-		std::cout << currentKeyFrame << "\n";
+		currentKeyFrame = nextKeyFrame;
+		std::cout<< "Current Cam KeyFrame (Forward): " << currentKeyFrame << "\n";
 	}
 	if (cameraTimer < 0)
 	{
 		cameraTimer = 1;
-		currentKeyFrame--;
-		if (currentKeyFrame < 0) currentKeyFrame = cameraKeyFrameCount_Planet - 1;
-		std::cout << currentKeyFrame << "\n";
+		currentKeyFrame = nextKeyFrame;
+		std::cout << "Current Cam KeyFrame (Backward): " << currentKeyFrame << "\n";
 	}
 	Vector3 pos1 = cameraPositions_Planet[currentKeyFrame];
 	Vector3 pos2 = cameraPositions_Planet[(currentKeyFrame + 1) % cameraKeyFrameCount_Planet];

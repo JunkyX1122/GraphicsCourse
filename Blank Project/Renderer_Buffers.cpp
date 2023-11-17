@@ -59,7 +59,7 @@ bool Renderer::CreateBuffers()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	pixelSize = 1;
-	colourCorrection = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	colourCorrection = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 	return true;
 }
 

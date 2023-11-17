@@ -133,6 +133,33 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
+	if (!introFlag)
+	{
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SPACE) && !camera->GetFreeMove())
+		{
+			introFlag = true;
+		}
+	}
+	if (introFlag)
+	{
+		float barsToIntro = 4.0f;
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SPACE) && introTimer > 0.0f)
+		{
+			introTimer = 1.0f;
+		}
+		if (introTimer < 1)
+		{
+			introTimer += dt / (barsToIntro * timePerBar);
+			colourCorrection = Vector4(introTimer, introTimer, introTimer, 1.0f);
+		}
+		else
+		{
+			introFlag = false;
+			introTimer = 1.0f;
+			colourCorrection = Vector4(introTimer, introTimer, introTimer, 1.0f);
+			cameraAnimateSpeed = 1.0f;
+		}
+	}
 	if (transitionFlag > 0)
 	{
 		Renderer::Transition(dt);
@@ -140,6 +167,10 @@ void Renderer::UpdateScene(float dt)
 	UpdateCameraControls();
 	if (!camera->GetFreeMove())
 	{
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SPACE) && !camera->GetFreeMove())
+		{
+			std::cout << "FPS: " << (1000 / dt) / 1000 << "\n";
+		}
 		switch(GetSceneType())
 		{
 		case(0):
