@@ -6,19 +6,15 @@ void Renderer::RenderThings()
 	switch (GetSceneType())
 	{
 	case(0):
-		globalSceneLight->SetPosition(heightMapSize * Vector3(0.5f, 3.0f, 0.5f) + Vector3(-5000.0f,0,0));
-		globalSceneLight->SetRadius(80000.0f);
-		globalSceneLight->SetColour(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 		DrawTerrain();
 		BuildNodeLists(planetSurfaceRoot);
+		RenderDude();
 		SortNodeLists();
 		DrawNodes();
 		DrawWater();
+		
 		break;
 	case(1):
-		globalSceneLight->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
-		globalSceneLight->SetRadius(80000.0f);
-		globalSceneLight->SetColour(Vector4(1.0f, 0.85f, 0.45f, 1.0f));
 		BuildNodeLists(spaceRoot);
 		SortNodeLists();
 		DrawNodes();
@@ -117,4 +113,35 @@ void Renderer::DrawWater()
 
 	glEnable(GL_CULL_FACE);
 	textureMatrix.ToIdentity();
+}
+
+void Renderer::RenderDude()
+{
+	textureMatrix.ToIdentity();
+
+	BindShader(animatedShader);
+	glUniform1i(glGetUniformLocation(animatedShader->GetProgram(), "diffuseTex"), 0);
+	
+
+	modelMatrix = Matrix4::Translation(Vector3(heightMapSize.x/2+1500.0f, heightMapSize.y/2 + 400.0f, heightMapSize.z/2 - 2000.0f))* Matrix4::Scale(Vector3(400.0f, 400.0f, 400.0f));
+	UpdateShaderMatrices();
+	vector<Matrix4> frameMatrices;
+
+	const Matrix4* invBindPos = animMesh->GetInverseBindPose();
+	const Matrix4* frameData = anim->GetJointData(currentAnimatedFrame);
+
+	for (unsigned int i = 0; i < animMesh->GetJointCount(); i++)
+	{
+		frameMatrices.emplace_back(frameData[i] * invBindPos[i]);
+	}
+
+	int j = glGetUniformLocation(animatedShader->GetProgram(), "joints");
+	glUniformMatrix4fv(j, frameMatrices.size(), false, (float*)frameMatrices.data());
+
+	for (int i = 0; i < animMesh->GetSubMeshCount(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, animTextures[i]);
+		animMesh->DrawSubMesh(i);
+	}
 }

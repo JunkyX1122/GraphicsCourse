@@ -15,9 +15,9 @@ Renderer::Renderer(Window& parent) : OGLRenderer(parent)
 
 	if (!shader->LoadSuccess()) return;
 
-	mesh = Mesh::LoadFromMeshFile("grass2.msh");
-	anim = new MeshAnimation("grass2.anm");
-	material = new MeshMaterial("grass2.mat");
+	mesh = Mesh::LoadFromMeshFile("Role_T.msh");
+	anim = new MeshAnimation("Role_T.anm");
+	material = new MeshMaterial("Role_T.mat");
 
 	for (int i = 0; i < mesh->GetSubMeshCount(); i++)
 	{

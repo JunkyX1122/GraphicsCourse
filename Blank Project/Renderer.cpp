@@ -17,6 +17,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)
 	if (!SetUpWater()) return;
 	if (!SetUpSkybox()) return;
 	if (!SetUpCamera()) return;
+	if (!SetUpDude()) return;
 
 	globalSceneLight = new Light(heightMapSize * Vector3(0.5f, 1.0f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x);
 	planetSurfaceRoot = new SceneNode();
@@ -133,6 +134,8 @@ Renderer::~Renderer(void)
 
 void Renderer::UpdateScene(float dt) 
 {
+	UpdateSceneLight(dt);
+
 	colourCorrectionCurrent = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	if (camera->GetPosition().y < heightMapSize.y / 8.0f * 1.75f && GetSceneType() == 0)
 	{
@@ -150,26 +153,8 @@ void Renderer::UpdateScene(float dt)
 			introFlag = true;
 		}
 	}
-	if (introFlag)
-	{
-		float barsToIntro = 4.0f;
-		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SPACE) && introTimer > 0.0f)
-		{
-			introTimer = 1.0f;
-		}
-		if (introTimer < 1)
-		{
-			introTimer += dt / (barsToIntro * timePerBar);
-			colourCorrection = Vector4(introTimer, introTimer, introTimer, 1.0f);
-		}
-		else
-		{
-			introFlag = false;
-			introTimer = 1.0f;
-			colourCorrection = Vector4(introTimer, introTimer, introTimer, 1.0f);
-			cameraAnimateSpeed = 1.0f;
-		}
-	}
+
+	if (introFlag) { HandleIntro(dt); }
 	if (transitionFlag > 0)
 	{
 		Renderer::Transition(dt);
@@ -192,11 +177,8 @@ void Renderer::UpdateScene(float dt)
 		}
 		
 	}
-
-	
-	
+	UpdateAnimation(dt);
 	camera->UpdateCamera(dt);
-
 
 	viewMatrix = camera->BuildViewMatrix();
 	projMatrix = Matrix4::Perspective(1.0f, 90000.0f, (float)width / (float)height, cameraFOV);
@@ -220,7 +202,7 @@ void Renderer::RenderScene()
 	FillBuffers();
 	DrawPointLights();
 	CombineBuffers();
-	ManagePostProcess();
+	if(togglePostProcess) ManagePostProcess();
 	DrawPostProcess();
 }
 
@@ -255,5 +237,6 @@ void Renderer::Transition(float dt)
 		colourCorrection = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 		transitionTimer = 1.0f;
 		transitionFlag = 0;
+		loopCount = 0;
 	}
 }

@@ -5,8 +5,12 @@
 #include "../nclgl/Light.h"
 #include "../nclgl/SceneNode.h"
 #include "../nclgl/Frustum.h"
+#include "../nclgl/MeshAnimation.h"
+#include "../nclgl/MeshMaterial.h"
 #include <algorithm>
 #define LIGHT_NUM 32
+#define LOOP_PLANET_SCENE 1
+
 class Renderer : public OGLRenderer	{
 public:
 	Renderer(Window &parent);
@@ -26,7 +30,8 @@ public:
 	 void TransitionCall() { transitionFlag = 2; transitionTimer = 1.0f; }
 	 bool IsTransitioning() { return transitionFlag != 0; }
 	 Camera* GetCamera() { return camera; }
-	
+
+
 	 float manualMove = 0.0f;
 protected:
 	Vector4 emptyColour;
@@ -42,6 +47,7 @@ protected:
 	int cameraAutoMoveType;
 	float cameraTimer;
 	float cameraOrbitTimer;
+	float cameraOrbitTransition;
 	float introTimer;
 	bool introFlag;
 	float timePerBar;
@@ -52,11 +58,13 @@ protected:
 	int currentKeyFrame;
 	float cameraAnimateSpeed;
 	float cameraFOV;
+	int loopCount;
 	bool SetUpCamera();
 	void AddCameraKeyFrame(Vector3 pos, Vector3 rot, float timeToReach);
 	void UpdateCameraControls();
 	void UpdateCameraMovementPlanet(float dt);
 	void UpdateCameraMovementSpace(float dt);
+	void HandleIntro(float dt);
 	float naive_lerp(float a, float b, float t);
 
 	SceneNode* planetSurfaceRoot;
@@ -103,6 +111,18 @@ protected:
 	SceneNode* sun;
 	bool SetUpSun();
 
+	Shader* animatedShader;
+	int currentAnimatedFrame;
+	float animationTimer;
+	Mesh* animMesh;
+	MeshAnimation* anim;
+	MeshMaterial* animMaterial;
+	vector<GLuint> animTextures;
+	bool SetUpDude();
+	void UpdateAnimation(float dt);
+	void RenderDude();
+
+
 	Shader* sceneShader;
 	Shader* pointLightShader;
 	Shader* combineShader;
@@ -142,6 +162,7 @@ protected:
 
 	std::vector<Vector3> pointLightPositions;
 	std::vector<Vector4> pointLightColours;
+	std::vector<float> pointLightScales;
 	std::vector<float> pointLightStarts;
 	GLuint pointLightFBO;
 	GLuint lightDiffuseTex;
@@ -155,6 +176,9 @@ protected:
 	void UpdatePointLights(float dt);
 
 	Light* globalSceneLight;
+	float globalLightTimer;
+	void UpdateSceneLight(float dt);
+
 	GLuint skyBox_Planet;
 	GLuint skyBox_Space;
 	Shader* skybox_Planet_Shader;
@@ -162,6 +186,7 @@ protected:
 	bool SetUpSkybox();
 	void DrawSkybox();
 
+	bool togglePostProcess;
 	GLuint processFBO;
 	GLuint processFinalFBO;
 	Shader* processShaderGetBright;

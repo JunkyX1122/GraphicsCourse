@@ -1,5 +1,6 @@
 #include "Renderer.h"
 
+
 bool Renderer::SetUpTerrain()
 {
 	heightMap = new HeightMap(TEXTUREDIR"terrain_3.png", 128.0f, 8);
@@ -191,18 +192,24 @@ bool Renderer::SetUpCrystals()
 	float upperBounds[3] = { 400, 400, 400 };
 
 
-	for (int i = 0; i < totalRocks; i++)
+	for (int i = 0; i < totalRocks + 1; i++)
 	{
 		float heightMapCentre = (heightMapSize.x / 16) / 2;
 		float heightMapRadius = ((heightMapSize.x / 16) / 2) * (0.25f) + ((heightMapSize.x / 16) / 2) * (1.0f / totalRocks * i) * 1.5f;
 		float angle = (2 * PI) / 20 * i * 0.85f + (0.32f * PI);
+		bool finalRock = i == totalRocks;
+		if (finalRock)
+		{
+			heightMapRadius = 0;
+		}
 		int x = (int)round(heightMapCentre + heightMapRadius * cos(angle));
 		int z = (int)round(heightMapCentre + heightMapRadius * sin(angle));
-
 		float y = heightMap->GetHeightAtCoord(x, z);
 
-		if (y != NULL && y > heightMapSize.y / 8 * 2 && y < heightMapSize.y / 8 * 4)
+		bool heightCheck = (finalRock) ? true : y > heightMapSize.y / 8 * 2 && y < heightMapSize.y / 8 * 4;
+		if (y != NULL && heightCheck)
 		{
+			float scaleMod = finalRock ? 4.0f : 1.0f;
 			float rotationX = (float)((rand() % (lbR - ubR + 1)) + lbR);
 			float rotationY = (float)((rand() % (lbR - ubR + 1)) + lbR);
 
@@ -210,23 +217,23 @@ bool Renderer::SetUpCrystals()
 			{
 				float lbS = lowerBounds[t];
 				float ubS = upperBounds[t];
-				scaleVectors[t] = lbS + (ubS - lbS) * (((float)rand()) / (float)RAND_MAX);
+				scaleVectors[t] = lbS + (ubS - lbS) * (((float)rand()) / (float)RAND_MAX) * scaleMod;
 			}
 
 			SceneNode* s = new SceneNode
 			(
 				Matrix4::Translation(Vector3((float)x * 16, (float)y, (float)z * 16)) * Matrix4::Rotation(rotationY, Vector3(0, 1, 0)),
 				Vector3(scaleVectors[0], scaleVectors[1], scaleVectors[2]),
-				1300.0f,
+				1300.0f * scaleMod,
 				crystalModel1,
 				crystalTexture1,
 				crystalBump1
 			);
 
 			Vector4 colour = Vector4(
-				0.5f + (float)(rand() / (float)RAND_MAX),
-				0.5f + (float)(rand() / (float)RAND_MAX),
-				0.5f + (float)(rand() / (float)RAND_MAX) * 0.25f,
+				0.5f + (float)(rand() / (float)RAND_MAX) * scaleMod,
+				0.5f + (float)(rand() / (float)RAND_MAX) * scaleMod,
+				0.5f + (float)(rand() / (float)RAND_MAX) * 0.25f * scaleMod,
 				0.90f);
 
 			//colour = Vector4(1, 1, 1, 1);
@@ -234,6 +241,7 @@ bool Renderer::SetUpCrystals()
 			s->SetColour(Vector4(colour.x * 3.0f, colour.y * 3.0f, colour.z * 3.0f, colour.w));
 			pointLightPositions.push_back(Vector3((float)x * 16, (float)y, (float)z * 16));
 			pointLightColours.push_back(Vector4(colour.x, colour.y, colour.z,1.0f));
+			pointLightScales.push_back(finalRock ? 2.0f : 1.0f);
 			planetSurfaceRoot->AddChild(s);
 		}
 	}
@@ -364,6 +372,7 @@ bool Renderer::SetUpCamera()
 	cameraTimer = 0.0f;
 	cameraOrbitTimer = 0.0f;
 	cameraAutoMoveType = 0;
+	cameraOrbitTransition = 0.0f;
 	float bpm = 130.0f;
 	float timesig = 4.0f;
 	float barspm = bpm / timesig;
@@ -384,29 +393,41 @@ bool Renderer::SetUpCamera()
 	
 	float waitBars = 4.0f;
 	float defaultTime = waitBars * timePerBar;
-	AddCameraKeyFrame(Vector3(24174.8f, 3312.67f, 7907.53f), Vector3(-3.28f , 165.19f , 0.0f		), defaultTime); // 0
-	AddCameraKeyFrame(Vector3(25776.7f, 2967.56f, 11433.8f), Vector3(5.26f  , 225.95f , -5.0f		), defaultTime);
+	AddCameraKeyFrame(Vector3(24174.8f, 3312.67f, 7907.53f), Vector3(-3.28f , 165.19f , 0.0f		), defaultTime); // 0 Bars
+	AddCameraKeyFrame(Vector3(25776.7f, 2967.56f, 11433.8f), Vector3(5.26f  , 225.95f , -5.0f		), defaultTime); // 1 Bar
 	AddCameraKeyFrame(Vector3(27447.6f, 2021.92f, 14204.2f), Vector3(12.26f , 133.829f, 2.5f		), defaultTime);
 	AddCameraKeyFrame(Vector3(27666.3f, 2757.5f , 16105.7f), Vector3(-2.37f , 69.919f , 20.5		), defaultTime);
 	AddCameraKeyFrame(Vector3(25303.6f, 3402.68f, 20467.8f), Vector3(-16.72f, 47.219f , 8.5f		), defaultTime);
 	AddCameraKeyFrame(Vector3(25389.0f, 4724.11f, 22105.6f), Vector3(-18.68f, 57.0393f, 0.0f		), defaultTime);
 	AddCameraKeyFrame(Vector3(23345.5f, 3042.83f, 25329.4f), Vector3(19.68f , 56.3394f, -2.5f		), defaultTime);
-
 	AddCameraKeyFrame(Vector3(20325.0f, 5024.69f, 25561.1f), Vector3(-27.57f, 89.0293f , 7.0f		), defaultTime);
 	AddCameraKeyFrame(Vector3(14930.9f, 1196.40f, 28449.7f), Vector3(-21.62f, 40.7293f , -16.5f		), defaultTime);
 	AddCameraKeyFrame(Vector3(10220.0f, 686.524f, 26711.1f), Vector3(15.13f , -24.4407f, -21.0f		), defaultTime);
-
 	AddCameraKeyFrame(Vector3(6408.33f, 1841.56f, 23910.8f), Vector3(-7.9f  , 33.5193f , 10.5f		), defaultTime);
 	AddCameraKeyFrame(Vector3(3531.42f, 3057.34f, 17650.9f), Vector3(-40.17f, -53.7707f, 3.0f		), defaultTime);
 	AddCameraKeyFrame(Vector3(14926.6f, 1826.32f, 2392.37f), Vector3(-15.67f, -70.3608f, 0.0f		), defaultTime);
 	AddCameraKeyFrame(Vector3(20294.2f, 7576.22f, 4030.8f ), Vector3(-45.7f , -194.401f, 0.0f		), defaultTime);
-	AddCameraKeyFrame(Vector3(22057.7f, 13146.3f, 14489.4f), Vector3(-69.57f, -250.401f, 0.0f		), defaultTime);
-	//AddCameraKeyFrame(Vector3(), Vector3());
-	//AddCameraKeyFrame(Vector3(), Vector3());
+	AddCameraKeyFrame(Vector3(22057.7f, 13146.3f, 14489.4f), Vector3(-69.57f, -250.401f, 0.0f		), defaultTime); // 15 Bars
+	AddCameraKeyFrame(Vector3(19413.5, 13146.3, 19815.9), Vector3(-72.23, -317.601, 0), defaultTime * 4); //19 Bars
+	AddCameraKeyFrame(Vector3(9327.32, 9077.9, 15392.3), Vector3(-38.9801, -462.922, 0), defaultTime * 4); // 23 Bars
+	AddCameraKeyFrame(Vector3(16068.9, 6341.81, 12106.9), Vector3(-47.18, -498.53, 13.5), defaultTime); // 24
+	AddCameraKeyFrame(Vector3(19759.5, 5515.73, 12621.3), Vector3(-26.46, -580.361, 11), defaultTime); // 25
+	AddCameraKeyFrame(Vector3(19025.4, 10925.23, 15951.4), Vector3(-60.6, -690.971, 5), defaultTime); //26
+	AddCameraKeyFrame(Vector3(16068.9, 15341.81, 12106.9), Vector3(-80.0, -498.53 - 360.0, 13.5), defaultTime - 2.0f); // 27
+	for (int i = 0; i < 4; i++) // 29 Bars
+	{
+	//	AddCameraKeyFrame(Vector3(9995.12, 4256.88, 20355), Vector3(-34.72, -418.1 - 360.0, 13.5), defaultTime / 2);
+	}
+	
+	
+	//AddCameraKeyFrame(Vector3(), Vector3(), defaultTime);
+	//AddCameraKeyFrame(Vector3(), Vector3(), defaultTime);
 
 	cameraKeyFrameCount_Planet = cameraPositions_Planet.size();
 	currentKeyFrame = 0;
 	cameraAnimateSpeed = 0.0f;
+	loopCount = 0;
+	globalLightTimer = 0.0f;
 	return true;
 }
 void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot, float timeToReach)
@@ -414,4 +435,28 @@ void Renderer::AddCameraKeyFrame(Vector3 pos, Vector3 rot, float timeToReach)
 	cameraPositions_Planet.push_back(pos);
 	cameraRotations_Planet.push_back(rot);
 	cameraKeyTimes_Planet.push_back(timeToReach);
+}
+
+bool Renderer::SetUpDude()
+{
+	animatedShader = new Shader("skinningVertex.glsl", "texturedFragment.glsl");
+	if (!animatedShader->LoadSuccess()) return false;
+	animMesh = Mesh::LoadFromMeshFile("Role_T.msh");
+	anim = new MeshAnimation("Role_T.anm");
+	animMaterial = new MeshMaterial("Role_T.mat");
+
+	for (int i = 0; i < animMesh->GetSubMeshCount(); i++)
+	{
+		const MeshMaterialEntry* matEntry = animMaterial->GetMaterialForLayer(i);
+
+		const string* fileName = nullptr;
+		matEntry->GetEntry("Diffuse", &fileName);
+		string path = TEXTUREDIR + *fileName;
+		GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+		animTextures.emplace_back(texID);
+	}
+
+	currentAnimatedFrame = 0;
+	animationTimer = 0.0f;
+	return true;
 }

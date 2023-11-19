@@ -61,6 +61,7 @@ bool Renderer::CreateBuffers()
 	pixelSize = 1;
 	colourCorrectionCurrent = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 	colourCorrection = colourCorrectionCurrent;
+	togglePostProcess = true;
 	return true;
 }
 
