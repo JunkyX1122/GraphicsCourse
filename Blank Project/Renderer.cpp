@@ -152,6 +152,11 @@ void Renderer::UpdateScene(float dt)
 		{
 			introFlag = true;
 		}
+		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_M))
+		{
+			introFlag = true;
+			introTimer = 1.0f;
+		}
 	}
 
 	if (introFlag) { HandleIntro(dt); }

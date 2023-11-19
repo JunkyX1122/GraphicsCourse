@@ -3,7 +3,7 @@
 
 int main()	{
 	//Window w("Make your own project!", 1280, 720, false);
-	Window w("spaece!", 1920, 1200, true);
+	Window w("spaece!", 1920, 1080, false);
 	//Window w("Make your own project!", 1920, 1080, true);
 
 	if(!w.HasInitialised()) {

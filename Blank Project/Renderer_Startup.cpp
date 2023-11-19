@@ -188,8 +188,8 @@ bool Renderer::SetUpCrystals()
 	int lbR = 0, ubR = 360;
 
 	float scaleVectors[3];
-	float lowerBounds[3] = { 200, 200, 200 };
-	float upperBounds[3] = { 400, 400, 400 };
+	float lowerBounds[3] = { 200, 300, 200 };
+	float upperBounds[3] = { 400, 500, 400 };
 
 
 	for (int i = 0; i < totalRocks + 1; i++)
