@@ -116,7 +116,6 @@ void Renderer::UpdateCameraMovementPlanet(float dt)
 		if (loopCount >= LOOP_PLANET_SCENE && !IsTransitioning()) TransitionCall();
 		cameraTimer = 0;
 		currentKeyFrame = nextKeyFrame;
-		std::cout << "Current Cam KeyFrame (Forward): " << currentKeyFrame << "\n";
 	}
 	Vector3 pos1 = cameraPositions_Planet[currentKeyFrame];
 	Vector3 pos2 = cameraPositions_Planet[nextKeyFrame];

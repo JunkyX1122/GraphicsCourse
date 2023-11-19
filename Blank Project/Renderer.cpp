@@ -164,7 +164,7 @@ void Renderer::UpdateScene(float dt)
 	{
 		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_SPACE) && !camera->GetFreeMove())
 		{
-			std::cout << "FPS: " << (1000 / dt) / 1000 << "\n";
+			//std::cout << "FPS: " << (1000 / dt) / 1000 << "\n";
 		}
 		switch(GetSceneType())
 		{

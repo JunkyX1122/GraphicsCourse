@@ -125,7 +125,7 @@ bool Renderer::SetUpRocks()
 	int lbR = 0, ubR = 360;
 
 	float scaleVectors[3];
-	float lowerBounds[3] = { 700, 700, 700 };
+	float lowerBounds[3] = { 700, 800, 700 };
 	float upperBounds[3] = { 900, 1700, 900 };
 
 

@@ -20,8 +20,8 @@ Window::Window(std::string title, int sizeX, int sizeY, bool fullScreen)	{
 
 	size.x = (float)sizeX; size.y = (float)sizeY;
 
-	fullScreen ? position.x = 0.0f : position.x = 100.0f;
-	fullScreen ? position.y = 0.0f : position.y = 100.0f;
+	fullScreen ? position.x = 0.0f : position.x = 00.0f;
+	fullScreen ? position.y = 0.0f : position.y = 00.0f;
 
 	HINSTANCE hInstance = GetModuleHandle( NULL );
 
